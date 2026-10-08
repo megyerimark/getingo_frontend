@@ -226,3 +226,119 @@
     flex-direction: column;
   }
 }
+
+
+app-admin {
+  color: var(--text-primary);
+
+  .filter-toolbar input,
+  .filter-toolbar select,
+  .admin-field input,
+  .admin-field select,
+  .admin-field textarea,
+  .users-toolbar input,
+  .deleted-toolbar input,
+  .audit-filters input,
+  .audit-filters select,
+  .revenue-filters input,
+  .revenue-filters select {
+    background: var(--surface-input);
+    color: var(--text-primary);
+    border: 1px solid var(--border-default);
+  }
+
+  .filter-toolbar input::placeholder,
+  .admin-field input::placeholder,
+  .admin-field textarea::placeholder,
+  .users-toolbar input::placeholder,
+  .deleted-toolbar input::placeholder,
+  .audit-filters input::placeholder,
+  .revenue-filters input::placeholder {
+    color: var(--text-muted);
+  }
+
+  .filter-toolbar input:focus,
+  .filter-toolbar select:focus,
+  .admin-field input:focus,
+  .admin-field select:focus,
+  .admin-field textarea:focus,
+  .users-toolbar input:focus,
+  .deleted-toolbar input:focus,
+  .audit-filters input:focus,
+  .audit-filters select:focus,
+  .revenue-filters input:focus,
+  .revenue-filters select:focus {
+    background: var(--surface-input);
+    color: var(--text-primary);
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(22, 119, 255, .12);
+    outline: none;
+  }
+
+  .admin-table,
+  table {
+    background: var(--surface-card);
+    color: var(--text-primary);
+    border-color: var(--border-default);
+  }
+
+  .admin-table thead,
+  table thead {
+    background: var(--surface-soft);
+  }
+
+  .admin-table th,
+  table th {
+    background: var(--surface-soft);
+    color: var(--text-secondary);
+    border-color: var(--border-default);
+  }
+
+  .admin-table tbody,
+  table tbody {
+    background: var(--surface-card);
+  }
+
+  .admin-table td,
+  table td {
+    background: var(--surface-card);
+    color: var(--text-secondary);
+    border-color: var(--border-default);
+  }
+
+  .admin-table tbody tr:hover td,
+  table tbody tr:hover td {
+    background: var(--surface-raised);
+  }
+
+  .admin-table .empty-state,
+  .admin-table .empty-row,
+  .empty-state,
+  .empty-row {
+    background: var(--surface-card);
+    color: var(--text-muted);
+  }
+
+  .admin-pager {
+    color: var(--text-secondary);
+  }
+
+  .admin-pager span {
+    color: var(--text-muted);
+  }
+
+  .admin-pager button {
+    background: var(--surface-raised);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-default);
+  }
+
+  .admin-pager button:hover:not(:disabled) {
+    background: var(--surface-soft);
+    border-color: var(--border-strong);
+  }
+
+  .admin-pager button:disabled {
+    opacity: .45;
+  }
+}

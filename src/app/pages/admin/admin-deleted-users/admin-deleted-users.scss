@@ -1,1 +1,128 @@
-.deleted-toolbar{display:flex;gap:9px;margin-bottom:18px}.deleted-toolbar input{flex:1;min-height:44px;padding:0 12px;border:1px solid var(--g-border,#d9e5f2);border-radius:11px;background:var(--g-surface,var(--surface-card));color:var(--g-text,#172033)}.reason-cell{max-width:360px;white-space:normal;line-height:1.45}.muted{color:var(--g-muted,#6b7b91);font-size:.84rem}.secure-backdrop{position:fixed;inset:0;z-index:4000;background:rgba(7,18,40,.62);backdrop-filter:blur(5px)}.secure-dialog{position:fixed;z-index:4001;left:50%;top:50%;width:min(460px,calc(100% - 28px));transform:translate(-50%,-50%);padding:26px;border:1px solid var(--g-border,#dfe7f1);border-radius:22px;background:var(--g-surface,var(--surface-card));color:var(--g-text,#172033);box-shadow:0 30px 90px rgba(0,0,0,.32)}.secure-icon{width:56px;height:56px;display:grid;place-items:center;margin:0 auto 12px;border-radius:17px;background:rgba(49,111,234,.12);color:#316fea;font-size:1.5rem}.secure-dialog h2,.secure-dialog p{text-align:center}.secure-dialog p{color:var(--g-muted,#67768b)}.secure-dialog label{display:grid;gap:7px;margin-top:18px}.secure-dialog label span{font-weight:800}.secure-dialog input{min-height:44px;padding:0 12px;border:1px solid var(--g-border,var(--border-default));border-radius:11px;background:var(--g-surface,var(--surface-card));color:inherit}.secure-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}.secure-actions button{min-height:42px;padding:0 15px;border:0;border-radius:11px;font-weight:850}.secure-actions .secondary{background:var(--g-surface-2,#eef3f9);color:inherit}.secure-actions .primary{background:#316fea;color:var(--surface-card)}@media(max-width:700px){.deleted-toolbar{flex-direction:column}.secure-actions{flex-direction:column-reverse}.secure-actions button{width:100%}}
+.deleted-toolbar {
+  display: flex;
+  gap: 9px;
+  margin-bottom: 18px;
+}
+
+.deleted-toolbar input {
+  flex: 1;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--g-border, #d9e5f2);
+  border-radius: 11px;
+  background: var(--g-surface, var(--surface-card));
+  color: var(--g-text, #172033);
+}
+
+.reason-cell {
+  max-width: 360px;
+  white-space: normal;
+  line-height: 1.45;
+}
+
+.muted {
+  color: var(--g-muted, #6b7b91);
+  font-size: .84rem;
+}
+
+.secure-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 4000;
+  background: rgba(7, 18, 40, .62);
+  backdrop-filter: blur(5px);
+}
+
+.secure-dialog {
+  position: fixed;
+  z-index: 4001;
+  left: 50%;
+  top: 50%;
+  width: min(460px, calc(100% - 28px));
+  transform: translate(-50%, -50%);
+  padding: 26px;
+  border: 1px solid var(--g-border, #dfe7f1);
+  border-radius: 22px;
+  background: var(--g-surface, var(--surface-card));
+  color: var(--g-text, #172033);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, .32);
+}
+
+.secure-icon {
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 12px;
+  border-radius: 17px;
+  background: rgba(49, 111, 234, .12);
+  color: #316fea;
+  font-size: 1.5rem;
+}
+
+.secure-dialog h2,
+.secure-dialog p {
+  text-align: center;
+}
+
+.secure-dialog p {
+  color: var(--g-muted, #67768b);
+}
+
+.secure-dialog label {
+  display: grid;
+  gap: 7px;
+  margin-top: 18px;
+}
+
+.secure-dialog label span {
+  font-weight: 800;
+}
+
+.secure-dialog input {
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--g-border, var(--border-default));
+  border-radius: 11px;
+  background: var(--g-surface, var(--surface-card));
+  color: inherit;
+}
+
+.secure-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.secure-actions button {
+  min-height: 42px;
+  padding: 0 15px;
+  border: 0;
+  border-radius: 11px;
+  font-weight: 850;
+}
+
+.secure-actions .secondary {
+  background: var(--g-surface-2, #eef3f9);
+  color: inherit;
+}
+
+.secure-actions .primary {
+  background: #316fea;
+  color: var(--surface-card);
+}
+
+@media (max-width: 700px) {
+  .deleted-toolbar {
+    flex-direction: column;
+  }
+  
+  .secure-actions {
+    flex-direction: column-reverse;
+  }
+  
+  .secure-actions button {
+    width: 100%;
+  }
+}

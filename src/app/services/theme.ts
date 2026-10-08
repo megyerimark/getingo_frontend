@@ -41,8 +41,17 @@ export class ThemeService {
 
     return globalThis.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   }
+  private apply(mode: 'light' | 'dark'): void {
+  const root = document.documentElement;
+  const body = document.body;
 
-  private apply(mode: ThemeMode): void {
+  root.setAttribute('data-theme', mode);
+  body.classList.toggle('dark-theme', mode === 'dark');
+  document.documentElement.setAttribute('data-theme', mode);
+document.body.classList.toggle('dark-theme', mode === 'dark');
+}
+
+/*   private apply(mode: ThemeMode): void {
     const root = this.document.documentElement;
     const body = this.document.body;
     root.dataset['theme'] = mode;
@@ -54,5 +63,5 @@ export class ThemeService {
 
 root.setAttribute('data-theme', mode);
 body.classList.toggle('dark-theme', mode === 'dark')
-  }
+  } */
 }
