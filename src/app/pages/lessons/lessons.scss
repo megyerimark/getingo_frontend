@@ -27,8 +27,8 @@
   height: calc(100vh - 72px);
   overflow-y: auto;
   padding: 18px 12px 24px;
-  border-right: 1px solid #dde8f5;
-  background: rgba(255, 255, 255, .97);
+  border-right: 1px solid var(--border-default);
+  background: var(--surface-card);
 }
 
 .course-summary {
@@ -60,7 +60,7 @@
 
 .course-summary h2 {
   margin: 4px 0 14px;
-  color: #102449;
+  color: var(--text-primary);
   font-size: 1.28rem;
   font-weight: 950;
   letter-spacing: -.035em;
@@ -108,7 +108,7 @@
   border: 0;
   border-radius: 10px;
   background: transparent;
-  color: #253f65;
+  color: var(--text-secondary);
   text-align: left;
 }
 
@@ -130,7 +130,7 @@
 
 .section-copy strong {
   overflow: hidden;
-  color: #17345d;
+  color: var(--text-primary);
   font-size: .8rem;
   font-weight: 900;
   text-overflow: ellipsis;
@@ -139,7 +139,7 @@
 
 .section-copy small {
   margin-top: 1px;
-  color: #8a98ac;
+    color: var(--text-muted);
   font-size: .62rem;
 }
 
@@ -164,7 +164,7 @@
   border: 0;
   border-radius: 9px;
   background: transparent;
-  color: #667792;
+  color: var(--text-muted);
   text-align: left;
   font-size: .78rem;
   font-weight: 720;
@@ -201,7 +201,7 @@
 
 .lesson-article {
   min-width: 0;
-  color: #233d64;
+  color: var(--text-secondary);
 }
 
 .lesson-breadcrumb {

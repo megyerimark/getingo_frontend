@@ -15,8 +15,17 @@
   overflow: hidden;
   padding: 54px 0 50px;
   background:
-    radial-gradient(circle at 76% 32%, rgba(43, 138, 255, .14), transparent 28%),
-    linear-gradient(135deg, var(--surface-card) 0%, var(--surface-soft) 48%, #eaf5ff 100%);
+    radial-gradient(
+      circle at 76% 32%,
+      rgba(43, 138, 255, .14),
+      transparent 28%
+    ),
+    linear-gradient(
+      135deg,
+      var(--surface-card) 0%,
+      var(--surface-soft) 55%,
+      var(--surface-page) 100%
+    );
 }
 
 .hero-section::before {
@@ -112,7 +121,7 @@
   grid-template-columns: 44px 1fr auto;
   align-items: center;
   padding: 5px;
-  border: 1px solid #d4e5f8;
+  border: 1px solid var(--border-default);
   border-radius: 15px;
   background: var(--surface-card);
   box-shadow: 0 15px 42px rgba(37, 90, 155, .1);
@@ -128,12 +137,12 @@
   height: 48px;
   border: 0;
   outline: 0;
-  color: #19365f;
+  color: var(--text-primary);
   background: transparent;
 }
 
 .hero-search input::placeholder {
-  color: #91a0b7;
+  color: var(--text-muted);
 }
 
 .hero-search button {
@@ -153,7 +162,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 7px;
-  color: #7687a1;
+  color: var(--text-muted);
   font-size: .78rem;
 }
 
@@ -164,10 +173,10 @@
 
 .popular-searches button {
   padding: 5px 10px;
-  border: 1px solid #d5e5f6;
+  border: 1px solid var(--border-default);
   border-radius: 999px;
-  background: rgba(255, 255, 255, .75);
-  color: #536a8a;
+  background: var(--surface-raised);
+  color: var(--text-secondary);
   font-size: .75rem;
   font-weight: 700;
   transition: .2s ease;

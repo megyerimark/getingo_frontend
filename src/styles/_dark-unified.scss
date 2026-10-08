@@ -1,6 +1,7 @@
 /* Unified Getingo dark theme: one global layer for legacy + new components. */
 html[data-theme='dark'] {
   color-scheme: dark;
+  --text-on-accent: #ffffff;
 
   body.dark-theme {
     background: var(--surface-page);

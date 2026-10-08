@@ -64,7 +64,7 @@
 }
 
 .admin-field label {
-  color: #435b7b;
+  color: var(--text-secondary);
   font-size: 12px;
   font-weight: 750;
 }
@@ -74,19 +74,22 @@
 .admin-field select {
   width: 100%;
   padding: 11px 13px;
-  border: 1px solid #dce7f4;
+  border: 1px solid var(--border-default);
   border-radius: 11px;
   outline: none;
-  background: #fbfdff;
-  color: #17345d;
+  background: var(--surface-input);
+  color: var(--text-primary);
 }
 
 .admin-field input:focus,
 .admin-field textarea:focus,
 .admin-field select:focus {
-  border-color: #72adff;
+  border-color: var(--accent-primary);
+  background: var(--surface-input);
+  box-shadow: 0 0 0 3px rgba(22, 119, 255, .12);
+ /*  border-color: #72adff;
   background: #fff;
-  box-shadow: 0 0 0 3px rgba(22, 119, 255, .09);
+  box-shadow: 0 0 0 3px rgba(22, 119, 255, .09); */
 }
 
 .admin-actions {

@@ -48,5 +48,11 @@ export class ThemeService {
     root.dataset['theme'] = mode;
     root.style.colorScheme = mode;
     body.classList.toggle('dark-theme', mode === 'dark');
+    root.setAttribute('data-theme', mode);
+    body.classList.toggle('dark-theme', mode === 'dark');
+
+
+root.setAttribute('data-theme', mode);
+body.classList.toggle('dark-theme', mode === 'dark')
   }
 }

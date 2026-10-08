@@ -3,7 +3,8 @@
 }
 
 .admin-dashboard {
-  color: #17345d;
+  /* color: #17345d; */
+  color: var(--text-primary);
 }
 
 .dashboard-loading {
@@ -27,7 +28,7 @@
   border-radius: 21px;
   background:
     radial-gradient(circle at 90% 12%, rgba(22, 119, 255, .11), transparent 26%),
-    linear-gradient(135deg, var(--surface-card), #f3f8ff);
+    linear-gradient(135deg, var(--surface-card), var(--surface-raised));
   box-shadow: 0 14px 38px rgba(29, 72, 132, .06);
 }
 
@@ -52,7 +53,8 @@
 
 .hero-content h1 {
   margin: 8px 0 5px;
-  color: #102449;
+  /* color: #102449; */
+  color: var(--text-primary);
   font-size: clamp(2rem, 3.5vw, 3rem);
   font-weight: 900;
   letter-spacing: -.045em;
@@ -60,7 +62,9 @@
 
 .hero-content p {
   margin: 0;
-  color: #71829c;
+  /* color: #71829c; */
+    color: var(--text-muted);
+
 }
 
 .hero-actions,
@@ -75,10 +79,13 @@
   align-items: center;
   gap: 8px;
   padding: 10px 13px;
-  border: 1px solid #dbe7f4;
+  /* border: 1px solid #dbe7f4; */
   border-radius: 11px;
-  background: var(--surface-card);
-  color: #536985;
+  /* background: var(--surface-card);
+  color: #536985; */
+  border: 1px solid var(--border-default);
+  background: var(--surface-raised);
+  color: var(--text-secondary);
   text-decoration: none;
   font-size: .8rem;
   font-weight: 800;
@@ -87,7 +94,8 @@
 .hero-button.primary {
   border-color: #1677ff;
   background: #1677ff;
-  color: var(--surface-card);
+  /* color: var(--surface-card); */
+  color: var(--text-on-accent);
   box-shadow: 0 9px 22px rgba(22, 119, 255, .18);
 }
 
@@ -126,7 +134,8 @@
 .section-heading h2,
 .panel-header h2 {
   margin: 3px 0 0;
-  color: #17345d;
+  /* color: #17345d; */
+  color: var(--text-primary);
   font-size: 1.18rem;
   font-weight: 900;
   letter-spacing: -.025em;
@@ -141,7 +150,7 @@
 .stat-card,
 .dashboard-panel,
 .quick-panel {
-  border: 1px solid #dfe9f5;
+  border: 1px solid var(--border-default);
   background: var(--surface-card);
   box-shadow: 0 10px 30px rgba(31, 73, 131, .045);
 }
@@ -196,21 +205,21 @@
 }
 
 .stat-label {
-  color: #71819a;
+  color: var(--text-muted);
   font-size: .72rem;
   font-weight: 750;
 }
 
 .stat-number {
   margin: 3px 0 5px;
-  color: #102449;
+  color: var(--text-primary);
   font-size: 1.8rem;
   line-height: 1;
   font-weight: 900;
 }
 
 .stat-description {
-  color: #8b98ab;
+  color: var(--text-muted);
   font-size: .67rem;
 }
 
