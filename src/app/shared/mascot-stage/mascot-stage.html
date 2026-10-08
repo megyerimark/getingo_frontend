@@ -1,0 +1,42 @@
+<div
+  class="mascot-stage"
+  [class.compact]="compact"
+  [class.is-reacting]="reaction !== null"
+  [attr.data-room]="room"
+  [attr.data-mood]="state?.mood?.key ?? 'happy'"
+  [style.--tilt-x]="tiltX + 'deg'"
+  [style.--tilt-y]="tiltY + 'deg'"
+  (pointermove)="onPointerMove($event)"
+  (pointerleave)="resetTilt()"
+  (click)="pet()">
+  <div class="stage-grid"></div>
+  <span class="ambient ambient-one"></span>
+  <span class="ambient ambient-two"></span>
+  <span class="ambient ambient-three"></span>
+  <div class="halo"></div>
+
+  <div class="mascot-wrap" [attr.data-reaction]="reaction ?? 'idle'">
+    <img
+      [src]="selectedImage()"
+      [alt]="selectedName() + ' Getingo Buddy'"
+      width="900"
+      height="900"
+      decoding="async"
+      draggable="false">
+    <div class="floor-shadow"></div>
+  </div>
+
+  @if (reaction) {
+    <div class="reaction-burst" aria-hidden="true">
+      <span>{{ reactionIcon() }}</span>
+      <i></i><i></i><i></i>
+    </div>
+  }
+
+  @if (state) {
+    <div class="stage-status">
+      <span>{{ state.mood.name }}</span>
+      <strong>Lv. {{ state.growth.level }}</strong>
+    </div>
+  }
+</div>

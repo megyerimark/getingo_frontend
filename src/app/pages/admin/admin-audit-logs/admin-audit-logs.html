@@ -1,0 +1,18 @@
+@if (!token) {
+  <section class="audit-lock">
+    <div class="lock-icon"><i class="bi bi-shield-lock-fill"></i></div>
+    <span class="eyebrow">Védett admin terület</span><h1>Audit napló</h1><p>Az audit napló érzékeny adminisztrációs adatokat tartalmaz. A megnyitáshoz erősítsd meg újra a jelszavadat.</p>
+    <label><span>Admin jelszó</span><input type="password" [(ngModel)]="password" autocomplete="current-password" (keyup.enter)="unlock()"></label>
+    <button type="button" (click)="unlock()" [disabled]="!password || unlocking"><i class="bi bi-unlock"></i> {{ unlocking ? 'Ellenőrzés...' : 'Napló feloldása' }}</button>
+    <small>A feloldás 10 percig érvényes, a token csak a memóriában marad.</small>
+  </section>
+} @else {
+  <div class="audit-page">
+    <header><div><span class="eyebrow">Védett admin terület</span><h1>Audit napló</h1><p>Admin műveletek keresése, szűrése és Excel-kompatibilis CSV exportja.</p></div><button type="button" class="export" (click)="export()" [disabled]="exporting"><i class="bi bi-file-earmark-spreadsheet"></i> {{ exporting ? 'Export...' : 'Excel export' }}</button></header>
+    <section class="audit-filters"><input [(ngModel)]="search" placeholder="Keresés admin, művelet, típus vagy IP alapján"><input [(ngModel)]="action" placeholder="Művelet pl. user.deleted"><input type="date" [(ngModel)]="from"><input type="date" [(ngModel)]="to"><button type="button" (click)="load()">Szűrés</button><button type="button" class="ghost" (click)="resetFilters()">Törlés</button></section>
+    <div class="table-responsive"><table class="table table-hover audit-table"><thead><tr><th>Dátum</th><th>Admin</th><th>Művelet</th><th>Típus</th><th>Cél ID</th><th>Adatok</th></tr></thead><tbody>
+      @if (loading) { <tr><td colspan="6">Betöltés...</td></tr> }
+      @else { @for (log of logs; track log.id) { <tr><td>{{ log.created_at | date:'yyyy.MM.dd HH:mm' }}</td><td>{{ log.actor_user_id ?? '-' }}</td><td><strong>{{ log.action }}</strong></td><td>{{ log.target_type ?? '-' }}</td><td>{{ log.target_id ?? '-' }}</td><td><pre>{{ log.metadata | json }}</pre></td></tr> } @empty { <tr><td colspan="6">Nincs találat.</td></tr> } }
+    </tbody></table></div>
+  </div>
+}

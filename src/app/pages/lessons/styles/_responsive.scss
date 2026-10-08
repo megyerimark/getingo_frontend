@@ -1,0 +1,71 @@
+@media (max-width: 860px) {
+  .lesson-layout { grid-template-columns: 1fr; }
+  .lesson-sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    max-height: min(310px, 42dvh);
+    padding-left: var(--app-gutter);
+    padding-right: var(--app-gutter);
+    border-right: 0;
+    border-bottom: 1px solid var(--border-default);
+  }
+  .lesson-main {
+    width: 100%;
+    min-width: 0;
+    padding: 30px var(--app-gutter) 58px;
+  }
+  .lesson-content-card { padding: 24px; }
+  .completion-card,
+  .compact-login-notice { align-items: flex-start; flex-direction: column; }
+  .completion-button { width: 100%; }
+  .login-actions { width: 100%; }
+  .login-actions .btn { flex: 1 1 0; }
+}
+
+@media (max-width: 620px) {
+  .lesson-header { margin-bottom: 30px; }
+  .lesson-title-row { flex-direction: column; gap: 15px; }
+  .lesson-title-row h1 {
+    font-size: clamp(2rem, 11vw, 2.75rem);
+    overflow-wrap: anywhere;
+  }
+  .lesson-header-actions { width: 100%; }
+  .focus-mode-toggle { flex: 1 1 auto; }
+  .lesson-content-card { padding: 20px 18px; }
+  .content-paragraph { font-size: .96rem; line-height: 1.72; }
+  .learning-section { margin-top: 42px; }
+  .learning-step-heading h2 { font-size: 1.25rem; }
+  .example-disclosure summary,
+  .note-disclosure summary { align-items: flex-start; flex-direction: column; gap: 4px; }
+  .example-disclosure summary small,
+  .note-disclosure summary small { margin-left: 0; }
+  .example-disclosure summary::after,
+  .note-disclosure summary::after { position: absolute; right: 16px; }
+  .editor-saved { display: none; }
+  .editor-body { padding: 9px; }
+  .code-editor { min-height: 290px; padding: 14px; font-size: 13px; }
+  .editor-footer .btn,
+  .editor-footer a { flex: 1 1 100%; }
+  .lesson-navigation { grid-template-columns: 1fr; }
+  .lesson-nav-button.next { text-align: left; justify-content: space-between; }
+  .lesson-nav-button.next span { order: 2; align-items: flex-start; }
+  .lesson-nav-button.next i { order: 3; }
+}
+
+.example-disclosure summary,
+.note-disclosure summary { position: relative; }
+
+.workspace-section app-code-runner {
+  display: block;
+  margin-top: 12px;
+  overflow: hidden;
+  border: 1px solid #d7e4f4;
+  border-radius: 16px;
+  box-shadow: 0 13px 34px rgba(21, 54, 99, .06);
+}
+
+:host-context(.dark-theme) .workspace-section app-code-runner {
+  border-color: #273950;
+  box-shadow: none;
+}

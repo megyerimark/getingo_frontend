@@ -1,0 +1,198 @@
+<section class="project-detail-page">
+  <div class="project-detail-shell">
+    <a routerLink="/projects" class="back-link"><i class="bi bi-arrow-left"></i> Vissza a projektekhez</a>
+
+    @if (loading) {
+      <div class="detail-state"><div class="spinner-border"></div></div>
+    } @else if (error) {
+      <div class="detail-state error">{{ error }}</div>
+    } @else if (project) {
+      <header class="project-header">
+        <div>
+          <div class="header-kicker-row">
+            <span class="eyebrow">Getingo Project Lab</span>
+            @if (project.is_completed) {
+              <span class="completed-badge"><i class="bi bi-check-circle-fill"></i> Teljesítve</span>
+            }
+          </div>
+          <h1>{{ project.title }}</h1>
+          <div class="meta-row">
+            <span><i class="bi bi-speedometer2"></i> {{ project.difficulty }}</span>
+            <span><i class="bi bi-clock"></i> kb. {{ project.estimated_time }} perc</span>
+            <span><i class="bi bi-stars"></i> +{{ project.xp_reward }} XP</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="project-timer" [class.not-started]="isNotStarted" [class.running]="project.timer_started && !isTimeLocked && !project.is_completed" [class.expired]="isTimeLocked" [class.completed]="project.is_completed">
+        <div class="timer-icon"><i class="bi" [class.bi-play-circle-fill]="isNotStarted" [class.bi-hourglass-split]="project.timer_started && !isTimeLocked && !project.is_completed" [class.bi-lock-fill]="isTimeLocked" [class.bi-check-circle-fill]="project.is_completed"></i></div>
+        <div class="timer-copy">
+          <span>{{ project.is_completed ? 'Projekt teljesítve' : (isNotStarted ? 'Készen állsz?' : (isTimeLocked ? 'Az idő lejárt' : 'Projekt folyamatban')) }}</span>
+          <strong>{{ countdownLabel() }}</strong>
+          <small>@if (isNotStarted) { Az idő csak a Kezdés gomb megnyomása után indul. Addig a szerkesztő zárolva marad. } @else if (isTimeLocked) { Az idő lejárt. Újraindítással új időkeretet kapsz. } @else if (!project.is_completed) { Fut az időkeret — a szerkesztő aktív. }</small>
+        </div>
+        @if (isNotStarted) {
+          <button type="button" class="start-project-button" (click)="startProject()" [disabled]="starting"><i class="bi bi-play-fill"></i>{{ starting ? 'Indítás...' : 'Kezdés' }}</button>
+        } @else if (isTimeLocked) {
+          <button type="button" class="restart-project-button" (click)="restartProject()" [disabled]="starting"><i class="bi bi-arrow-clockwise"></i>{{ starting ? 'Újraindítás...' : 'Újraindítás' }}</button>
+        } @else if (!project.is_completed) { <div class="timer-total">{{ project.estimated_time }} perc</div> }
+      </section>
+
+      <div class="project-layout">
+        <article class="project-brief">
+          <span class="section-kicker">Projektleírás</span>
+          <h2>Mit kell elkészítened?</h2>
+          <div class="description">{{ project.description }}</div>
+
+          <div class="validation-note" [class.ready]="project.validation_configured">
+            <i class="bi" [class.bi-patch-check-fill]="project.validation_configured" [class.bi-info-circle]="!project.validation_configured"></i>
+            <div>
+              <strong>{{ project.validation_configured ? 'Automatikusan ellenőrizhető' : 'Ellenőrzés beállításra vár' }}</strong>
+              <p>
+                @if (project.validation_configured) {
+                  <span>Típus: {{ validationLabel() }}.</span>
+                  @if (project.validation_trusted) {
+                    <span> Siker esetén ez az ellenőrzés XP-t is adhat.</span>
+                  } @else {
+                    <span> A konzolos ellenőrzés csak azonnali visszajelzés, XP-t nem ad.</span>
+                  }
+                } @else {
+                  A projektet már megoldhatod és mentheted, de az adminnak még meg kell adnia a várt eredményt.
+                }
+              </p>
+            </div>
+          </div>
+
+          <div class="mentor-intro">
+            <i class="bi bi-stars"></i>
+            <div>
+              <strong>Elakadtál? Kérdezd a Getingo Mentort.</strong>
+              <p>A saját futási hibádból ad célzott tippet úgy, hogy közben nem mutatja meg a kész megoldást.</p>
+            </div>
+          </div>
+
+          <div class="privacy-note">
+            <i class="bi bi-shield-check"></i>
+            <div>
+              <strong>A mintamegoldás rejtve marad</strong>
+              <p>Az admin megoldását és az elvárt kimenetet a tanulói API nem küldi le a böngészőnek.</p>
+            </div>
+          </div>
+        </article>
+
+        <section class="lab-card">
+          <div class="lab-toolbar">
+            <div>
+              <span class="section-kicker">Saját munkám</span>
+              <h2>Kódszerkesztő</h2>
+            </div>
+            <div class="toolbar-actions">
+              <button type="button" class="secondary-button" (click)="resetToStarter()" [disabled]="isEditorLocked">
+                <i class="bi bi-arrow-counterclockwise"></i> Kezdőkód
+              </button>
+              <button type="button" class="secondary-button" (click)="saveWorkspace()" [disabled]="saving || isEditorLocked">
+                <i class="bi bi-cloud-check"></i> {{ saving ? 'Mentés...' : 'Mentés' }}
+              </button>
+              <button type="button" class="run-button" (click)="runProject()" [disabled]="running || isEditorLocked">
+                <i class="bi bi-play-fill"></i> {{ running ? 'Fut...' : 'Futtatás' }}
+              </button>
+              <button type="button" class="mentor-button" [class.pro]="auth.currentUser()?.is_premium" (click)="askMentor()" [disabled]="running || mentorAnalyzing || isEditorLocked">
+                <i class="bi bi-stars"></i>
+                {{ mentorAnalyzing ? 'Elemzés...' : (auth.currentUser()?.is_premium ? 'Mentor Pro elemzés' : 'Miért nem működik?') }}
+              </button>
+              <button type="button" class="check-button" (click)="checkProject()" [disabled]="checking || running || isEditorLocked">
+                <i class="bi bi-patch-check"></i> {{ checking ? 'Ellenőrzés...' : 'Ellenőrzés' }}
+              </button>
+            </div>
+          </div>
+
+          @if (savedMessage) {
+            <div class="saved-message">{{ savedMessage }}</div>
+          }
+
+          @if (checkMessage) {
+            <div class="check-message" [class.success]="checkPassed === true" [class.failure]="checkPassed === false">
+              <i class="bi" [class.bi-check-circle-fill]="checkPassed === true" [class.bi-lightbulb]="checkPassed !== true"></i>
+              {{ checkMessage }}
+            </div>
+          }
+
+          @if (mentorOpen) {
+            <aside class="mentor-card" [class.warning]="mentorTone === 'warning'" [class.success]="mentorTone === 'success'" [class.pro]="mentorTier === 'pro'">
+              <div class="mentor-avatar"><i [class]="'bi ' + mentorIcon()"></i></div>
+              <div class="mentor-content">
+                <div class="mentor-title-row">
+                  <strong>{{ mentorTier === 'pro' ? 'Getingo Mentor Pro' : 'Getingo Mentor' }}</strong>
+                  <span>{{ mentorTier === 'pro' ? 'PREMIUM · mélyebb diagnózis' : 'rávezet, nem megold helyetted' }}</span>
+                </div>
+                <p>{{ mentorHint }}</p>
+                @if (mentorSuggestions.length) {
+                  <div class="mentor-suggestions">
+                    @for (suggestion of mentorSuggestions; track $index) {
+                      <div class="mentor-suggestion"><i class="bi bi-arrow-right-circle"></i><span>{{ suggestion }}</span></div>
+                    }
+                  </div>
+                  <button type="button" class="mentor-focus-button" (click)="jumpToMentorFocus()">
+                    <i class="bi bi-crosshair"></i> Ugrás ide: {{ mentorFocusLabel() }}
+                  </button>
+                }
+              </div>
+            </aside>
+          }
+
+          @if (isNotStarted) {
+            <div class="project-start-message"><i class="bi bi-play-circle-fill"></i><div><strong>A projekt még nem indult el.</strong><span>Nyomd meg fent a Kezdés gombot. Ekkor indul az idő és válik szerkeszthetővé a kód.</span></div></div>
+          }
+
+          @if (isTimeLocked) {
+            <div class="time-lock-message"><i class="bi bi-lock-fill"></i><div><strong>Az időkeret lejárt.</strong><span>A kód megtekinthető, de már nem módosítható, menthető vagy ellenőrizhető.</span></div></div>
+          }
+
+          <div class="editor-tabs" role="tablist" aria-label="Projekt szerkesztő">
+            <button type="button" [class.active]="activeTab === 'html'" (click)="setTab('html')">HTML</button>
+            <button type="button" [class.active]="activeTab === 'css'" (click)="setTab('css')">CSS</button>
+            <button type="button" [class.active]="activeTab === 'javascript'" (click)="setTab('javascript')">JavaScript</button>
+            <button type="button" [class.active]="activeTab === 'console'" (click)="setTab('console')">
+              Konzol
+              @if (consoleOutput.length) { <span>{{ consoleOutput.length }}</span> }
+            </button>
+          </div>
+
+          <div class="editor-panel">
+            @if (activeTab === 'html') {
+              <textarea [(ngModel)]="htmlCode" [disabled]="isEditorLocked" spellcheck="false" aria-label="HTML kód" placeholder="<h1>Szia Getingo!</h1>"></textarea>
+            } @else if (activeTab === 'css') {
+              <textarea [(ngModel)]="cssCode" [disabled]="isEditorLocked" spellcheck="false" aria-label="CSS kód" placeholder="h1 { color: #316fea; }"></textarea>
+            } @else if (activeTab === 'javascript') {
+              <textarea [(ngModel)]="javascriptCode" [disabled]="isEditorLocked" spellcheck="false" aria-label="JavaScript kód" placeholder="console.log('Szia Getingo!');"></textarea>
+            } @else {
+              <div class="console-panel">
+                @for (line of consoleOutput; track $index) {
+                  <div><span class="prompt">›</span>{{ line }}</div>
+                } @empty {
+                  <p>Futtasd a projektet, és itt megjelenik a console.log() kimenete.</p>
+                }
+              </div>
+            }
+          </div>
+        </section>
+      </div>
+
+      <section class="preview-card">
+        <div class="preview-heading">
+          <div>
+            <span class="section-kicker">Élő előnézet</span>
+            <h2>A projekt eredménye</h2>
+          </div>
+          <span class="sandbox-badge"><i class="bi bi-shield-lock"></i> sandbox</span>
+        </div>
+
+        <iframe
+          #previewFrame
+          class="preview-frame"
+          title="Projekt előnézet"
+          sandbox="allow-scripts"></iframe>
+      </section>
+    }
+  </div>
+</section>

@@ -1,0 +1,20 @@
+/* Shared visual language for loading, empty and error states. */
+:is(.loading-card,.dashboard-loading,.buddy-loading,.notes-loading,.projects-state,.portfolio-state,.empty-state,.empty-portfolio,.search-empty) {
+  border: 1px solid var(--border-default);
+  border-radius: 18px;
+  background: var(--surface-card);
+  color: var(--text-secondary);
+  box-shadow: var(--shadow-card);
+}
+
+:is(.loading-card,.dashboard-loading,.buddy-loading,.notes-loading,.projects-state,.portfolio-state,.empty-state,.empty-portfolio,.search-empty) :is(h2,h3,strong) {
+  color: var(--text-primary);
+}
+
+:is(.loading-card,.dashboard-loading,.buddy-loading,.notes-loading,.projects-state,.portfolio-state,.empty-state,.empty-portfolio,.search-empty) :is(p,small) {
+  color: var(--text-muted);
+}
+
+:is(.error-state,.alert-danger,.feedback.error) {
+  border-color: color-mix(in srgb, var(--status-danger) 35%, var(--border-default));
+}

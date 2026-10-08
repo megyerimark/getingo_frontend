@@ -1,0 +1,64 @@
+<div class="runner">
+  <div class="runner-toolbar">
+    <div>
+      <span class="runner-title">{{ languageLabel }}</span>
+      @if (language !== 'web') {
+        <span class="runner-note">Elkülönített sandbox</span>
+      }
+      @if (language === 'sql') {
+        <span class="runner-note">Az éles adatbázist nem éri el</span>
+      }
+    </div>
+
+    <div class="runner-actions">
+      <button class="btn btn-success btn-sm" type="button" (click)="run()" [disabled]="running">
+        @if (running) { <span class="spinner-border spinner-border-sm"></span> Fut... }
+        @else { ▶ Futtatás }
+      </button>
+
+      @if (hasRun) {
+        <button class="btn btn-outline-secondary btn-sm" type="button" (click)="clear()">Törlés</button>
+      }
+    </div>
+  </div>
+
+  @if (language === 'web') {
+    <iframe #previewFrame class="preview-frame" title="Kód eredménye" sandbox="allow-scripts"></iframe>
+  } @else {
+    <div class="remote-runner-body">
+      @if (language === 'python' || language === 'csharp') {
+        <details class="stdin-panel">
+          <summary>Program bemenete (stdin) – opcionális</summary>
+          <textarea [(ngModel)]="stdin" spellcheck="false" placeholder="Ide írhatod azt, amit input() vagy Console.ReadLine() olvasna be."></textarea>
+        </details>
+      }
+
+      @if (language === 'sql') {
+        <div class="sql-hint">
+          A lekérdezés egy minden futtatásnál újragenerált gyakorló adatbázison fut. A Getingo valódi adatbázisához nincs hozzáférése.
+        </div>
+      }
+
+      @if (errorMessage) {
+        <div class="runner-error" role="alert">{{ errorMessage }}</div>
+      }
+
+      @if (warning) {
+        <div class="runner-warning" role="status">{{ warning }}</div>
+      }
+
+      @if (hasRun && !errorMessage) {
+        <div class="execution-meta">
+          <span>{{ status }}</span>
+          @if (runtime) { <span>{{ runtime }}</span> }
+          @if (sqlDialect) { <span>{{ sqlDialect }}</span> }
+          @if (executionTime) { <span>{{ executionTime }} s</span> }
+          @if (memory) { <span>{{ memory }} KB</span> }
+        </div>
+        <pre class="runner-output">{{ output }}</pre>
+      } @else if (!hasRun && !errorMessage) {
+        <div class="runner-empty">A program kimenete itt fog megjelenni.</div>
+      }
+    </div>
+  }
+</div>

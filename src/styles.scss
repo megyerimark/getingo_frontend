@@ -1,0 +1,462 @@
+@use './styles/theme-tokens';
+@use './styles/ui-states';
+@use './styles/admin';
+@use './styles/dark-unified';
+@use 'bootstrap/scss/bootstrap';
+
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+:root {
+  --getingo-navy: #071a3a;
+  --getingo-navy-2: #0d244d;
+  --getingo-blue: #1677ff;
+  --getingo-blue-dark: #0b5fe0;
+  --getingo-indigo: #3557e8;
+  --getingo-sky: #eaf5ff;
+  --getingo-sky-2: #f5f9ff;
+  --getingo-text: #102449;
+  --getingo-muted: #667792;
+  --getingo-border: #dfe9f6;
+  --getingo-surface: #ffffff;
+  --getingo-bg: #f7faff;
+  --getingo-shadow: 0 18px 55px rgba(18, 55, 108, .09);
+  --getingo-radius: 20px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  background: var(--getingo-bg);
+  color: var(--getingo-text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+a {
+  text-underline-offset: 3px;
+}
+
+::selection {
+  background: rgba(22, 119, 255, .18);
+  color: var(--getingo-navy);
+}
+
+.container {
+  --bs-gutter-x: 2rem;
+  max-width: 1212px;
+}
+
+.btn {
+  border-radius: 11px;
+  font-weight: 750;
+}
+
+.btn-primary,
+.btn-success {
+  border-color: var(--getingo-blue);
+  background: var(--getingo-blue);
+  color: #fff;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-success:hover,
+.btn-success:focus {
+  border-color: var(--getingo-blue-dark);
+  background: var(--getingo-blue-dark);
+  color: #fff;
+}
+
+.btn-outline-success {
+  border-color: #9ec8ff;
+  color: var(--getingo-blue);
+}
+
+.btn-outline-success:hover,
+.btn-outline-success:focus {
+  border-color: var(--getingo-blue);
+  background: var(--getingo-blue);
+  color: #fff;
+}
+
+.form-control,
+.form-select {
+  border-color: var(--getingo-border);
+  border-radius: 12px;
+  color: var(--getingo-text);
+  box-shadow: none;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #72adff;
+  box-shadow: 0 0 0 4px rgba(22, 119, 255, .1);
+}
+
+.spinner-border {
+  color: var(--getingo-blue);
+}
+
+.alert {
+  border-radius: 14px;
+}
+
+/* =========================================================
+   GETINGO PREMIUM THEME
+   A body.premium-theme osztályt az app.ts kapcsolja a
+   backend által visszaadott is_premium mező alapján.
+   ========================================================= */
+body.premium-theme {
+  --getingo-blue: #7c3aed;
+  --getingo-blue-dark: #6d28d9;
+  --getingo-indigo: #2563eb;
+  --getingo-sky: #f1edff;
+  --getingo-sky-2: #f8f6ff;
+  --getingo-border: #ded9f4;
+  --getingo-bg: #f8f7ff;
+  --getingo-shadow: 0 22px 65px rgba(70, 45, 145, .12);
+  background:
+    radial-gradient(circle at 82% 4%, rgba(139, 92, 246, .10), transparent 26%),
+    radial-gradient(circle at 8% 22%, rgba(37, 99, 235, .08), transparent 25%),
+    #f8f7ff;
+}
+
+body.premium-theme::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 72% 15%, rgba(168, 85, 247, .10), transparent 24%),
+    radial-gradient(circle at 24% 75%, rgba(56, 189, 248, .08), transparent 28%);
+}
+
+body.premium-theme .site-navbar {
+  border-bottom-color: rgba(139, 92, 246, .16);
+  background: rgba(255, 255, 255, .86);
+  box-shadow: 0 12px 36px rgba(63, 45, 124, .08);
+}
+
+body.premium-theme .brand-mark {
+  background: linear-gradient(135deg, #8b5cf6, #2563eb 70%, #38bdf8);
+  box-shadow: 0 10px 28px rgba(124, 58, 237, .30);
+}
+
+body.premium-theme .dashboard-page,
+body.premium-theme .project-detail-page,
+body.premium-theme .portfolio-page {
+  background:
+    radial-gradient(circle at 86% 7%, rgba(139, 92, 246, .09), transparent 24%),
+    radial-gradient(circle at 13% 28%, rgba(37, 99, 235, .06), transparent 26%),
+    transparent;
+}
+
+body.premium-theme .learning-command-center,
+body.premium-theme .summary-card,
+body.premium-theme .buddy-card,
+body.premium-theme .learning-path-card,
+body.premium-theme .achievement-card,
+body.premium-theme .project-brief,
+body.premium-theme .lab-card,
+body.premium-theme .preview-card,
+body.premium-theme .portfolio-card {
+  border-color: rgba(126, 96, 205, .18) !important;
+  background: linear-gradient(145deg, rgba(255,255,255,.95), rgba(249,247,255,.94)) !important;
+  box-shadow: 0 24px 62px rgba(65, 45, 135, .10) !important;
+}
+
+body.premium-theme .buddy-scene {
+  border-color: rgba(139, 92, 246, .24) !important;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(168, 85, 247, .17), transparent 35%),
+    radial-gradient(circle at 60% 68%, rgba(56, 189, 248, .12), transparent 30%),
+    linear-gradient(160deg, #fbf9ff, #f0f6ff) !important;
+  box-shadow: inset 0 1px rgba(255,255,255,.85), 0 24px 58px rgba(77, 51, 160, .13) !important;
+}
+
+body.premium-theme .buddy-image {
+  filter:
+    drop-shadow(0 26px 34px rgba(74, 47, 160, .28))
+    drop-shadow(0 0 22px rgba(129, 92, 246, .22)) !important;
+}
+
+body.premium-theme .lab-card {
+  position: relative;
+  overflow: hidden;
+}
+
+body.premium-theme .lab-card::before {
+  content: '✦ PREMIUM LAB';
+  position: absolute;
+  top: 13px;
+  right: 16px;
+  z-index: 2;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(139,92,246,.11), rgba(37,99,235,.09));
+  color: #7047d4;
+  font-size: .62rem;
+  font-weight: 950;
+  letter-spacing: .08em;
+}
+
+body.premium-theme .editor-panel,
+body.premium-theme .console-panel {
+  box-shadow: 0 0 0 1px rgba(139, 92, 246, .16), 0 22px 46px rgba(32, 24, 75, .16) !important;
+}
+
+body.premium-theme .portfolio-card:hover,
+body.premium-theme .achievement-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(139, 92, 246, .34) !important;
+}
+
+body.premium-theme .btn-primary,
+body.premium-theme .btn-success {
+  background: linear-gradient(90deg, #8b5cf6, #2563eb);
+  border-color: transparent;
+  box-shadow: 0 12px 28px rgba(106, 72, 210, .24);
+}
+
+/* Gyorsabb, kényelmesebb interakciók */
+button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}
+button:not(:disabled),a{touch-action:manipulation}
+:focus-visible{outline:3px solid rgba(22,119,255,.32);outline-offset:3px}
+img{max-width:100%}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* =========================================================
+   GETINGO UNIFIED THEME
+   Egyetlen globális dark-theme réteg. A komponensek ugyanazokat
+   a surface/text/border tokeneket kapják, nincs V3/V4/V5/V6 lánc.
+   ========================================================= */
+:root {
+  --app-gutter: 16px;
+  --getingo-code-bg: #071a33;
+  --getingo-code-bg-2: #0b203d;
+  --getingo-soft-surface: var(--surface-soft);
+  --g-page: var(--surface-page);
+  --g-surface: var(--surface-card);
+  --g-surface-2: var(--surface-soft);
+  --g-raised: var(--surface-raised);
+  --g-input: var(--surface-input);
+  --g-text: var(--text-primary);
+  --g-text-2: var(--text-secondary);
+  --g-muted: var(--text-muted);
+  --g-border: var(--border-default);
+  --g-border-strong: var(--border-strong);
+  --g-accent: var(--accent-primary);
+  --g-shadow: var(--shadow-card);
+}
+
+html, body { width: 100%; max-width: 100%; overflow-x: clip; }
+app-root { display: block; width: 100%; min-width: 0; }
+@media (min-width: 720px) { :root { --app-gutter: 24px; } }
+@media (min-width: 1200px) { :root { --app-gutter: 32px; } }
+@media (max-width: 560px) { :root { --app-gutter: 12px; } .container { --bs-gutter-x: 1.5rem; } }
+
+body :is(.home-shell,.page-shell,.portfolio-shell,.dashboard-page,.projects-shell,.project-detail-shell,.search-shell) {
+  width: min(var(--page-max, 1180px), calc(100% - (var(--app-gutter) * 2))) !important;
+}
+body .portfolio-shell { --page-max: 1220px; }
+body .project-detail-shell { --page-max: 1320px; }
+body .search-shell { --page-max: 980px; }
+.premium-page { padding-left: var(--app-gutter) !important; padding-right: var(--app-gutter) !important; }
+
+html[data-theme='dark'] {
+  --getingo-navy: #eef4ff;
+  --getingo-navy-2: #dbe8f8;
+  --getingo-blue: var(--accent-primary);
+  --getingo-blue-dark: #8dbbff;
+  --getingo-indigo: var(--accent-secondary);
+  --getingo-sky: #101c2e;
+  --getingo-sky-2: #0d1726;
+  --getingo-text: var(--text-primary);
+  --getingo-muted: var(--text-muted);
+  --getingo-border: var(--border-default);
+  --getingo-surface: var(--surface-card);
+  --getingo-bg: var(--surface-page);
+  --getingo-soft-surface: var(--surface-soft);
+  --getingo-shadow: var(--shadow-card);
+  --getingo-code-bg: #070e18;
+  --getingo-code-bg-2: #0a1524;
+}
+
+html[data-theme='dark'] body.dark-theme {
+  background:
+    radial-gradient(circle at 84% 0%, rgba(65,126,255,.10), transparent 28%),
+    radial-gradient(circle at 8% 32%, rgba(90,103,255,.05), transparent 26%),
+    var(--surface-page) !important;
+  color: var(--text-primary) !important;
+}
+
+html[data-theme='dark'] body.dark-theme::before {
+  background:
+    radial-gradient(circle at 80% 5%, rgba(82,125,255,.07), transparent 26%),
+    radial-gradient(circle at 10% 30%, rgba(255,255,255,.018), transparent 24%) !important;
+}
+
+/* Oldal-hátterek */
+html[data-theme='dark'] body.dark-theme :is(
+  app-home,app-categories,app-lessons,app-dashboard,app-buddy,app-tasks,app-projects,
+  app-project-detail,app-portfolio,app-account,app-search,app-premium,app-register,
+  app-login,app-forgot-password,app-reset-password,app-privacy,app-cookies,app-admin,
+  .home-page,.categories-page,.lesson-layout,.dashboard-page,.buddy-page,.tasks-page,
+  .projects-page,.project-detail-page,.portfolio-page,.search-page,.premium-page,.auth-page,
+  .privacy-page,.cookies-page,.account-page
+) { background-color: transparent !important; color: var(--text-primary) !important; }
+
+/* Egységes felületek */
+html[data-theme='dark'] body.dark-theme :is(
+  .site-navbar,.lesson-sidebar,.lesson-text,.note-box,.login-notice,.summary-card,.buddy-card,
+  .notes-section,.projects-promo,.dashboard-danger-zone,.learning-command-center,.learning-path-card,
+  .achievement-card,.path-node,.today-card,.next-step-card,.plan-card,.premium-preview,
+  .buddy-showcase-card,.project-brief,.lab-card,.preview-card,.portfolio-card,.account-card,
+  .search-card,.category-card,.hero-card,.feature-card,.search-result,.portfolio-hero,.projects-hero,
+  .premium-alert,.buddy-showcase,.auth-card,.quiz-card,.runner,.favorites-section,.admin-card,
+  .mini-card,.stat-card,.chart-card,.quick-action,.recent-item,.delete-dialog,.secure-dialog,
+  .behavior-card,.mmorpg-card,.skin-card,.task-card,.task-modal,.filter-bar,.premium-tool,.milestone,
+  .status-card,.settings-card,.data-card,.billing-card,.subscription-card,.revenue-card,.audit-card,
+  app-privacy header,app-privacy article,app-cookies article,.cookie-dialog,.cookie-banner
+) {
+  border-color: var(--border-default) !important;
+  background: var(--surface-card) !important;
+  color: var(--text-primary) !important;
+  box-shadow: var(--shadow-card) !important;
+}
+
+html[data-theme='dark'] body.dark-theme :is(.site-navbar,.lesson-sidebar,.admin-sidebar,.admin-topbar) {
+  border-color: var(--border-default) !important;
+  background: rgba(13,23,38,.94) !important;
+  color: var(--text-primary) !important;
+  backdrop-filter: blur(14px);
+}
+
+html[data-theme='dark'] body.dark-theme :is(h1,h2,h3,h4,h5,h6,strong,.brand,.brand-name,.admin-profile strong) {
+  color: var(--text-primary) !important;
+}
+html[data-theme='dark'] body.dark-theme :is(p,small,.muted,.auth-subtitle,.section-heading span,.lesson-breadcrumb,.course-progress-row,.admin-profile span,.topbar-left span) {
+  color: var(--text-muted) !important;
+}
+html[data-theme='dark'] body.dark-theme :is(a,.nav-links a,.course-back,.lesson-link,.panel-link,.audit-link,.back-link) {
+  color: var(--text-secondary);
+}
+html[data-theme='dark'] body.dark-theme :is(a:hover,.nav-links a:hover,.nav-links a.active,.course-back:hover,.lesson-link:hover,.lesson-link.active,.panel-link,.audit-link) {
+  color: var(--accent-primary) !important;
+}
+
+/* Űrlapok */
+html[data-theme='dark'] body.dark-theme :is(.form-control,.form-select,input,textarea,select) {
+  border-color: var(--border-default) !important;
+  background-color: var(--surface-input) !important;
+  color: var(--text-primary) !important;
+  box-shadow: none;
+}
+html[data-theme='dark'] body.dark-theme :is(input,textarea)::placeholder { color: #70839d !important; }
+html[data-theme='dark'] body.dark-theme :is(.form-control,.form-select,input,textarea,select):focus {
+  border-color: var(--accent-primary) !important;
+  box-shadow: 0 0 0 4px rgba(111,169,255,.10) !important;
+}
+
+/* Gombok és halvány panelek */
+html[data-theme='dark'] body.dark-theme :is(
+  .action-button.ghost,.menu-toggle,.theme-toggle,.theme-toggle-admin,.care-actions button,.note-card button,
+  .growth-sources span,.secondary,.admin-button.secondary,.icon-button,.lesson-icon-action,.dashboard-link,
+  .editor-tabs,.editor-footer,.code-block-header,.section-toggle:hover,.curriculum-section.open>.section-toggle
+) {
+  border-color: var(--border-default) !important;
+  background: var(--surface-raised) !important;
+  color: var(--text-secondary) !important;
+}
+
+/* Kód és szerkesztők */
+html[data-theme='dark'] body.dark-theme :is(
+  .code-block,.w3-editor,.editor-panel,.console-panel,.original-code,.editor-body,.code-editor,
+  .personal-code-editor,.runner-toolbar,.preview-wrap
+) {
+  border-color: #253650 !important;
+  background: var(--getingo-code-bg) !important;
+  color: #dfe9f7 !important;
+}
+html[data-theme='dark'] body.dark-theme .preview-frame { border-color: var(--border-default) !important; background: #0b1220 !important; }
+
+/* Tananyag és kvíz */
+html[data-theme='dark'] body.dark-theme :is(.lesson-link:hover,.lesson-link.active,.section-toggle:hover,.curriculum-section.open>.section-toggle) { background: var(--surface-raised) !important; }
+html[data-theme='dark'] body.dark-theme .lesson-link.completed:not(.active) { color: var(--status-success) !important; }
+html[data-theme='dark'] body.dark-theme .quiz-option { border-color: var(--border-default) !important; background: var(--surface-soft) !important; color: var(--text-secondary) !important; }
+html[data-theme='dark'] body.dark-theme .quiz-option:hover { background: var(--surface-raised) !important; }
+html[data-theme='dark'] body.dark-theme .quiz-option.selected { border-color: var(--accent-primary) !important; background: rgba(111,169,255,.12) !important; }
+html[data-theme='dark'] body.dark-theme .result-message.correct { background: rgba(32,155,103,.15) !important; color: var(--status-success) !important; }
+html[data-theme='dark'] body.dark-theme .result-message.incorrect { background: rgba(214,78,91,.14) !important; color: var(--status-danger) !important; }
+
+/* Auth */
+html[data-theme='dark'] body.dark-theme .auth-shell { border-color: var(--border-default) !important; background: var(--surface-card) !important; box-shadow: var(--shadow-elevated) !important; }
+html[data-theme='dark'] body.dark-theme .auth-aside { background: radial-gradient(circle at 82% 18%,rgba(70,161,255,.13),transparent 27%),linear-gradient(145deg,#081426,#10294d) !important; }
+html[data-theme='dark'] body.dark-theme :is(.privacy-consent,.password-strength) { border-color: var(--border-default) !important; background: var(--surface-soft) !important; color: var(--text-secondary) !important; }
+
+/* Projekt / portfólió */
+html[data-theme='dark'] body.dark-theme :is(.difficulty,.time,.portfolio-meta span,.sandbox-badge,.favorite-count) { border-color: var(--border-default) !important; background: var(--surface-raised) !important; color: var(--text-secondary) !important; }
+html[data-theme='dark'] body.dark-theme .project-timer { border-color: var(--border-default) !important; background: var(--surface-card) !important; }
+html[data-theme='dark'] body.dark-theme .project-timer.running { border-color: rgba(63,179,125,.34) !important; background: rgba(31,129,92,.12) !important; }
+html[data-theme='dark'] body.dark-theme .project-timer.expired { border-color: rgba(220,92,104,.34) !important; background: rgba(125,40,49,.16) !important; }
+
+/* Admin */
+html[data-theme='dark'] body.dark-theme app-admin .admin-shell { background: var(--surface-page) !important; color: var(--text-primary) !important; }
+html[data-theme='dark'] body.dark-theme app-admin :is(.admin-table th,.admin-table td) { border-color: var(--border-default) !important; color: var(--text-secondary) !important; }
+html[data-theme='dark'] body.dark-theme app-admin .admin-table th { background: var(--surface-soft) !important; color: var(--text-primary) !important; }
+html[data-theme='dark'] body.dark-theme app-admin .admin-table tbody tr:hover td { background: var(--surface-raised) !important; }
+html[data-theme='dark'] body.dark-theme app-admin .sidebar-nav a { color: var(--text-muted) !important; }
+html[data-theme='dark'] body.dark-theme app-admin .sidebar-nav a:hover,
+html[data-theme='dark'] body.dark-theme app-admin .sidebar-nav a.active { background: var(--surface-raised) !important; color: var(--accent-primary) !important; }
+
+/* Jogi és cookie felületek */
+html[data-theme='dark'] body.dark-theme :is(app-privacy .legal-warning) { border-color: rgba(230,177,78,.30) !important; background: rgba(125,88,24,.15) !important; color: #f0c978 !important; }
+html[data-theme='dark'] body.dark-theme app-cookies .cookie-table div { border-color: var(--border-default) !important; background: var(--surface-soft) !important; color: var(--text-secondary) !important; }
+html[data-theme='dark'] body.dark-theme app-cookie-consent .cookie-backdrop { background: rgba(2,8,18,.76) !important; }
+
+/* Premium dark ugyanazokra a tokenekre épül, csak az accent változik. */
+html[data-theme='dark'] body.dark-theme.premium-theme {
+  --getingo-bg: var(--surface-page);
+  --getingo-surface: var(--surface-card);
+  --getingo-sky: var(--surface-soft);
+  --getingo-sky-2: var(--surface-soft);
+  --getingo-border: var(--border-default);
+  --getingo-text: var(--text-primary);
+  --getingo-muted: var(--text-muted);
+  --getingo-blue: var(--accent-primary);
+  --getingo-indigo: var(--accent-secondary);
+  background:
+    radial-gradient(circle at 84% 5%, rgba(139,92,246,.13), transparent 28%),
+    radial-gradient(circle at 8% 28%, rgba(37,99,235,.08), transparent 26%),
+    var(--surface-page) !important;
+}
+html[data-theme='dark'] body.dark-theme.premium-theme :is(
+  .learning-command-center,.summary-card,.buddy-card,.learning-path-card,.achievement-card,
+  .project-brief,.lab-card,.preview-card,.portfolio-card
+) { border-color: rgba(167,139,250,.28) !important; }
+
+.site-footer { background: #07162f; }
+html[data-theme='dark'] body.dark-theme .site-footer { background: #070d16 !important; border-top-color: var(--border-default) !important; }
+
+@media (max-width: 560px) {
+  body :is(.home-shell,.page-shell,.portfolio-shell,.dashboard-page,.projects-shell,.project-detail-shell,.search-shell) {
+    width: calc(100% - (var(--app-gutter) * 2)) !important;
+  }
+}

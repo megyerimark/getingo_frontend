@@ -1,0 +1,51 @@
+<div class="admin-page">
+  <div class="page-header">
+    <div><span class="page-eyebrow">Tartalomkezelés</span><h1>Fő kategóriák</h1><p>Kategóriák létrehozása és szűrése.</p></div>
+  </div>
+
+  <div class="page-stats"><div class="mini-card"><span>Összes kategória</span><strong>{{ total }}</strong></div></div>
+
+  <section class="admin-card">
+    <h2>{{ editingId ? 'Fő kategória szerkesztése' : 'Új fő kategória' }}</h2>
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <div class="admin-form-grid">
+        <div class="admin-field"><label>Név</label><input formControlName="name" placeholder="JavaScript" (input)="generateSlug()"></div>
+        <div class="admin-field"><label>Slug</label><input formControlName="slug" placeholder="javascript"></div>
+        <div class="admin-field"><label>Sorrend</label><input type="number" min="0" formControlName="sort_order"></div>
+      </div>
+      <div class="admin-actions">
+        <button class="admin-button primary" type="submit">{{ editingId ? 'Mentés' : 'Létrehozás' }}</button>
+        @if (editingId) { <button class="admin-button secondary" type="button" (click)="cancel()">Mégse</button> }
+      </div>
+    </form>
+  </section>
+
+  <section class="admin-card">
+    <div class="list-heading"><div><h2>Kategóriák</h2><p>{{ total }} találat · {{ page }}/{{ lastPage }} oldal</p></div></div>
+    <form class="filter-toolbar compact" [formGroup]="filterForm" (ngSubmit)="applyFilters()">
+      <input formControlName="search" placeholder="Keresés név vagy slug alapján...">
+      <button class="admin-button primary" type="submit">Szűrés</button>
+      <button class="admin-button secondary" type="button" (click)="resetFilters()">Törlés</button>
+    </form>
+
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead><tr><th>Sorrend</th><th>Név</th><th>Slug</th><th>Fejezetek</th><th>Leckék</th><th>Feladatok</th><th>Műveletek</th></tr></thead>
+        <tbody>
+          @if (loading) {
+            <tr><td colspan="7" class="empty-admin">Betöltés...</td></tr>
+          } @else {
+            @for (category of categories; track category.id) {
+              <tr>
+                <td>{{ category.sort_order }}</td><td><strong>{{ category.name }}</strong></td><td><code>{{ category.slug }}</code></td>
+                <td>{{ category.lesson_sections_count ?? 0 }}</td><td>{{ category.lessons_count ?? 0 }}</td><td>{{ category.exercises_count ?? 0 }}</td>
+                <td><div class="admin-actions"><button class="admin-button secondary" type="button" (click)="edit(category)">Szerkesztés</button><button class="admin-button danger" type="button" (click)="delete(category)">Törlés</button></div></td>
+              </tr>
+            } @empty { <tr><td colspan="7" class="empty-admin">Nincs a szűrésnek megfelelő kategória.</td></tr> }
+          }
+        </tbody>
+      </table>
+    </div>
+    <div class="admin-pager"><button class="admin-button secondary" type="button" (click)="previousPage()" [disabled]="page <= 1">← Előző</button><span>{{ page }} / {{ lastPage }}</span><button class="admin-button secondary" type="button" (click)="nextPage()" [disabled]="page >= lastPage">Következő →</button></div>
+  </section>
+</div>

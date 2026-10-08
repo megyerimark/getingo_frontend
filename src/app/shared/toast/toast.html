@@ -1,0 +1,11 @@
+<div class="toast-stack" aria-live="polite" aria-atomic="false">
+  @for (item of toast.toasts(); track item.id) {
+    <div class="getingo-toast" [class]="'getingo-toast ' + item.type" [attr.role]="item.type === 'error' ? 'alert' : 'status'">
+      <i class="bi toast-icon" [class]="'bi toast-icon ' + icon(item.type)"></i>
+      <span class="toast-message">{{ item.message }}</span>
+      <button type="button" class="toast-close" aria-label="Értesítés bezárása" (click)="toast.dismiss(item.id)">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+  }
+</div>

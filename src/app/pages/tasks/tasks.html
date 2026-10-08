@@ -1,0 +1,42 @@
+<main class="tasks-page">
+  <section class="tasks-hero">
+    <div><span class="eyebrow">Gyakorlás</span><h1>Feladatok</h1><p>Nyisd meg a feladatot, és oldd meg az admin által megadott időkereten belül.</p></div>
+    <div class="hero-note"><i class="bi bi-clock-history"></i><span>Az idő az első megnyitáskor indul, lejárat után a megoldás zárolódik.</span></div>
+  </section>
+
+  <section class="filter-bar">
+    <input [(ngModel)]="search" name="search" placeholder="Keresés a feladatok között..." (keyup.enter)="load()">
+    <select [(ngModel)]="difficulty" name="difficulty" (change)="load()">
+      <option value="">Minden nehézség</option><option value="kezdő">Kezdő</option><option value="közepes">Közepes</option><option value="haladó">Haladó</option>
+    </select>
+    <button type="button" (click)="load()"><i class="bi bi-search"></i> Szűrés</button>
+  </section>
+
+  @if (loading) { <div class="loading">Feladatok betöltése...</div> }
+  @else {
+    <section class="task-grid">
+      @for (item of items; track item.id) {
+        <article class="task-card">
+          <div class="task-meta"><span>{{ item.category?.name ?? 'Feladat' }}</span><span>{{ item.difficulty }}</span></div>
+          <h2>{{ item.title }}</h2><p>{{ item.description }}</p>
+          <div class="task-time"><i class="bi bi-stopwatch"></i><strong>{{ item.estimated_time }} perc</strong>
+            @if (item.submission?.expires_at) { <small [class.expired]="item.submission?.is_expired">{{ item.submission?.is_expired ? 'Lejárt' : 'Már elkezdted' }}</small> }
+          </div>
+          <button type="button" class="open-task" (click)="open(item)" [disabled]="opening">{{ item.submission ? 'Folytatás' : 'Feladat indítása' }} <i class="bi bi-arrow-right"></i></button>
+        </article>
+      } @empty { <div class="empty">Nincs a szűrésnek megfelelő feladat.</div> }
+    </section>
+  }
+
+  @if (selected) {
+    <button type="button" class="task-modal-backdrop" aria-label="Feladat ablak bezárása" (click)="close()"></button>
+    <section class="task-modal" role="dialog" aria-modal="true" aria-labelledby="task-dialog-title" appFocusTrap tabindex="-1">
+      <header><div><span>{{ selected.category?.name }}</span><h2 id="task-dialog-title">{{ selected.title }}</h2></div><button type="button" class="close" (click)="close()"><i class="bi bi-x-lg"></i></button></header>
+      <div class="countdown" [class.expired]="expired"><i class="bi bi-stopwatch-fill"></i><div><small>{{ expired ? 'Az idő lejárt' : 'Hátralévő idő' }}</small><strong>{{ timeLeft() }}</strong></div></div>
+      <p class="description">{{ selected.description }}</p>
+      <label><span>Megoldásod</span><textarea [(ngModel)]="answer" name="answer" rows="14" [disabled]="expired" placeholder="Írd ide a megoldásodat..."></textarea></label>
+      @if (expired) { <div class="expired-note"><i class="bi bi-lock-fill"></i> A határidő lejárt, ezért a megoldás már nem módosítható.</div> }
+      <footer><button type="button" class="secondary" (click)="close()">Bezárás</button><button type="button" class="primary" (click)="save()" [disabled]="expired || saving">{{ saving ? 'Mentés...' : 'Megoldás mentése' }}</button></footer>
+    </section>
+  }
+</main>

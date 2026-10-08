@@ -1,0 +1,42 @@
+<footer class="site-footer">
+  <div class="footer-shell">
+    <div class="footer-brand">
+      <a class="brand-link" routerLink="/" aria-label="Getingo főoldal"><span class="brand-mark">G</span><span>Getingo</span></a>
+      <p>Programozás egyszerűen. Magyarul. Saját tempóban.</p>
+      <a class="footer-contact" href="mailto:getingo@getingo.hu"><i class="bi bi-envelope"></i> getingo@getingo.hu</a>
+    </div>
+
+    <div class="footer-links learning-links">
+      <div>
+        <strong>Tanulás</strong>
+        <a routerLink="/search" [queryParams]="{ q: 'HTML' }">HTML</a>
+        <a routerLink="/search" [queryParams]="{ q: 'CSS' }">CSS</a>
+        <a routerLink="/search" [queryParams]="{ q: 'JavaScript' }">JavaScript</a>
+        <a routerLink="/search" [queryParams]="{ q: 'Python' }">Python</a>
+        <a routerLink="/search" [queryParams]="{ q: 'C#' }">C#</a>
+        <a routerLink="/search" [queryParams]="{ q: 'SQL' }">SQL</a>
+      </div>
+      <div>
+        <strong>Gyakorlás</strong>
+        <a routerLink="/categories">Minden tananyag</a>
+        <a routerLink="/tasks">Feladatok</a>
+        <a routerLink="/projects">Projekt Lab</a>
+        <a routerLink="/portfolio">Portfólió</a>
+        <a routerLink="/buddy">Buddy</a>
+      </div>
+      <div>
+        <strong>Adatvédelem</strong>
+        <a routerLink="/adatkezelesi-tajekoztato">Adatkezelés</a>
+        <a routerLink="/sutik">Süti tájékoztató</a>
+        <button type="button" class="footer-link-button" (click)="cookieConsent.openSettings()">Süti beállítások</button>
+      </div>
+    </div>
+
+    <div class="footer-cta">
+      <span>Kezdd el a következő leckét.</span>
+      <a class="footer-button" routerLink="/categories">Tanulás indítása <i class="bi bi-arrow-right"></i></a>
+      <small>Kérdésed van? <a href="mailto:getingo@getingo.hu">Írj nekünk</a>.</small>
+    </div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 Getingo</span><span>Tanulás · Gyakorlás · Fejlődés</span></div>
+</footer>

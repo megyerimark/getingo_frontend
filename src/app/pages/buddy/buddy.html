@@ -1,0 +1,240 @@
+<main class="buddy-page">
+  <header class="buddy-header">
+    <div>
+      <span class="eyebrow">Getingo Buddy MMORPG</span>
+      <h1>A saját élő tanulótársad</h1>
+      <p>A Buddy nem csak skin: eszik, iszik, pihen, játszik, hangulata és energiája változik, kötődik hozzád, és a 451 lecke + 1353 kvíz teljesítésével 100 szinten fejlődik.</p>
+    </div>
+    <div class="header-actions">
+      <a routerLink="/dashboard"><i class="bi bi-arrow-left"></i> Dashboard</a>
+      @if (premium) { <span class="pro"><i class="bi bi-stars"></i> PREMIUM</span> }
+    </div>
+  </header>
+
+  @if (loading) {
+    <div class="loading"><span class="spinner-border spinner-border-sm"></span> Buddy világ betöltése...</div>
+  } @else if (state) {
+    <section class="room-tabs" aria-label="Buddy szobák">
+      @for (availableRoom of state.available_rooms; track availableRoom.key) {
+        <button
+          type="button"
+          [class.active]="room === availableRoom.key"
+          [class.locked]="!availableRoom.unlocked"
+          (click)="selectRoom(availableRoom)">
+          <i [class]="'bi ' + roomIcon(availableRoom.key)"></i>
+          <span>{{ availableRoom.name }}</span>
+          @if (availableRoom.premium) { <small>PRO</small> }
+          @if (!availableRoom.unlocked) { <i class="bi bi-lock-fill"></i> }
+        </button>
+      }
+    </section>
+
+    <section class="buddy-grid">
+      <article class="stage-card" [class.premium-stage]="selectedSkin?.premium">
+        <div class="view-switch" role="group" aria-label="Buddy megjelenítés">
+          <button type="button" [class.active]="viewMode === '3d'" (click)="viewMode = '3d'">
+            <i class="bi bi-box"></i> MMORPG 3D
+          </button>
+          <button type="button" [class.active]="viewMode === 'mascot'" (click)="viewMode = 'mascot'">
+            <i class="bi bi-lightning-charge"></i> Gyors nézet
+          </button>
+        </div>
+
+        @if (viewMode === '3d') {
+          @defer (when viewMode === '3d') {
+            <app-buddy-3d
+              [state]="state"
+              [premium]="premium"
+              [room]="room"
+              [modelUrl]="selectedModelUrl"
+              [actionEvent]="actionEvent">
+            </app-buddy-3d>
+          } @placeholder {
+            <div class="deferred-loading"><span class="spinner-border spinner-border-sm"></span> 3D Buddy motor indítása...</div>
+          }
+        } @else {
+          <app-mascot-stage
+            [state]="state"
+            [room]="room"
+            [actionEvent]="actionEvent">
+          </app-mascot-stage>
+        }
+
+        <div class="stage-overlay">
+          <span>{{ state.growth.evolution_name }} · {{ selectedSkin?.personality }}</span>
+          <strong>Szint {{ state.growth.level }} / {{ state.growth.max_level }}</strong>
+        </div>
+        <div class="ai-state"><i [class]="'bi ' + behaviorIcon()"></i><span>{{ state.behavior.name }}</span><small>AI állapot</small></div>
+        @if (selectedSkin?.premium) {
+          <div class="premium-badge"><i class="bi bi-gem"></i> Premium Buddy</div>
+        }
+        <button class="pet-button" type="button" (click)="pet()" [disabled]="action !== null"><i class="bi bi-hand-index-thumb"></i> Simogatás</button>
+      </article>
+
+      <aside class="care-card">
+        <div class="identity">
+          <div class="buddy-name-block">
+            <span>Korszak {{ state.growth.era }}/10 · Evolution {{ state.growth.evolution_stage }}/3</span>
+            @if (!editingName) {
+              <div class="buddy-name-row"><h2>{{ state.companion.name }}</h2><button type="button" class="rename-buddy" (click)="startRename()" title="Buddy átnevezése"><i class="bi bi-pencil-square"></i></button></div>
+            } @else {
+              <div class="rename-form"><input [(ngModel)]="buddyName" maxlength="24" aria-label="Buddy új neve" (keyup.enter)="saveName()"><button type="button" (click)="saveName()" [disabled]="savingName"><i class="bi bi-check-lg"></i></button><button type="button" (click)="cancelRename()" [disabled]="savingName"><i class="bi bi-x-lg"></i></button></div>
+            }
+            <p><strong>{{ selectedSkin?.name }}</strong> · {{ selectedSkin?.personality }} · {{ state.mood.name }} · {{ state.mood.score }}%</p>
+          </div>
+          <div class="points"><span>Gondozási pont</span><strong>{{ state.companion.care_points }}</strong></div>
+        </div>
+
+        @if (selectedSkin) {
+          <div class="personality-card" [style.--buddy-accent]="selectedSkin.accent">
+            <span><i class="bi bi-stars"></i> Signature</span>
+            <strong>{{ selectedSkin.signature }}</strong>
+          </div>
+        }
+
+        <div class="behavior-card"><i [class]="'bi ' + behaviorIcon()"></i><div><span>Most ezt érzi</span><strong>{{ state.behavior.name }}</strong><small>{{ state.behavior.message }}</small></div></div>
+
+        <div class="meters-grid">
+          <div class="meter">
+            <div><span>Víz</span><strong>{{ state.companion.water }}%</strong></div>
+            <div class="track water"><span [style.width.%]="state.companion.water"></span></div>
+          </div>
+          <div class="meter">
+            <div><span>Jóllakottság</span><strong>{{ state.companion.hunger }}%</strong></div>
+            <div class="track food"><span [style.width.%]="state.companion.hunger"></span></div>
+          </div>
+          <div class="meter">
+            <div><span>Kedv</span><strong>{{ state.companion.happiness }}%</strong></div>
+            <div class="track happy"><span [style.width.%]="state.companion.happiness"></span></div>
+          </div>
+          <div class="meter">
+            <div><span>Energia</span><strong>{{ state.companion.energy }}%</strong></div>
+            <div class="track energy"><span [style.width.%]="state.companion.energy"></span></div>
+          </div>
+          <div class="meter bond-meter">
+            <div><span>Kötődés</span><strong>{{ state.companion.bond }}%</strong></div>
+            <div class="track bond"><span [style.width.%]="state.companion.bond"></span></div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" (click)="care('water')" [disabled]="action !== null"><b>💧</b><span>Itatás</span><small>{{ actionCostLabel('water') }}</small></button>
+          <button type="button" (click)="care('feed')" [disabled]="action !== null"><b>🍖</b><span>Etetés</span><small>{{ actionCostLabel('feed') }}</small></button>
+          <button type="button" (click)="care('play')" [disabled]="action !== null"><b>🎾</b><span>Játék</span><small>{{ actionCostLabel('play') }}</small></button>
+          <button type="button" (click)="rest()" [disabled]="action !== null"><b>🌙</b><span>Pihenés</span><small>{{ actionCostLabel('rest') }}</small></button>
+        </div>
+        @if (error) { <div class="message error">{{ error }}</div> }
+      </aside>
+    </section>
+
+    <section class="mmorpg-card">
+      <div class="section-head">
+        <div><span class="eyebrow">MMORPG Pet Engine</span><h2>Élő Buddy viselkedés</h2></div>
+        <p>A 3D motor automatikusan vált idle, séta, ülés, éhség, szomjúság és alvás állapotok között. Ha a GLB-ben valódi animációs clip található, azt használja; különben játékmotoros fallback mozgást futtat.</p>
+      </div>
+      <div class="ai-flow">
+        <span><i class="bi bi-person-walking"></i> Idle / séta</span>
+        <i class="bi bi-chevron-right"></i>
+        <span><i class="bi bi-egg-fried"></i> Éhség</span>
+        <i class="bi bi-chevron-right"></i>
+        <span><i class="bi bi-cup-straw"></i> Evés / ivás</span>
+        <i class="bi bi-chevron-right"></i>
+        <span><i class="bi bi-moon-stars"></i> Pihenés / alvás</span>
+        <i class="bi bi-chevron-right"></i>
+        <span><i class="bi bi-emoji-heart-eyes"></i> Boldog reakció</span>
+      </div>
+      <div class="clip-contract"><strong>Riggelt GLB animációs szerződés:</strong><span>idle · idle_2 · walk · run · sit · lie_down · sleep · wake_up · eat · drink · play · happy · sad · excited · tired · hungry · celebrate · level_up · focus · signature · evolution</span></div>
+    </section>
+
+    <section class="reaction-card">
+      <div class="section-head">
+        <div><span class="eyebrow">Interakciók</span><h2>Buddy reakciók</h2></div>
+        <p>A fejlődéssel új reakciók nyílnak meg. A Premium Buddyk külön Fókusz és Signature mozdulatokat kapnak.</p>
+      </div>
+      <div class="reaction-grid">
+        @for (reaction of state.reactions; track reaction.key) {
+          <button type="button" class="reaction-button" [class.locked]="!reaction.unlocked" [class.premium-reaction]="reaction.premium" (click)="playReaction(reaction)">
+            <b>{{ reaction.icon }}</b>
+            <span><strong>{{ reaction.label }}</strong><small>{{ reaction.description }}</small></span>
+            @if (reaction.unlocked) { <i class="bi bi-play-circle-fill"></i> }
+            @else if (reaction.premium && !premium) { <i class="bi bi-gem"></i> }
+            @else { <i class="bi bi-lock-fill"></i> }
+            <em>Lv. {{ reaction.min_level }}</em>
+          </button>
+        }
+      </div>
+    </section>
+
+    <section class="progress-card">
+      <div class="progress-head">
+        <div><span>Fejlődés</span><h2>{{ state.growth.name }}</h2></div>
+        <strong>{{ state.growth.progress_percentage }}%</strong>
+      </div>
+      <div class="growth-track"><span [style.width.%]="state.growth.progress_percentage"></span></div>
+      <div class="curriculum-progress">
+        <span><i class="bi bi-book-half"></i> {{ state.growth.completed_lessons }} / {{ state.growth.total_lessons }} lecke</span>
+        <span><i class="bi bi-patch-check-fill"></i> {{ state.growth.completed_quizzes }} / {{ state.growth.total_quizzes }} kvíz</span>
+        <span><i class="bi bi-lightning-charge-fill"></i> {{ state.growth.curriculum_points }} / {{ state.growth.curriculum_max_points }} tanulási XP</span>
+      </div>
+      <div class="next-unlock"><i class="bi bi-unlock"></i><span>Következő feloldás</span><strong>{{ nextUnlockLabel }}</strong></div>
+      <div class="roadmap">
+        @for (era of [1,2,3,4,5,6,7,8,9,10]; track era) {
+          <span [class.reached]="state.growth.era >= era" [class.current]="state.growth.era === era">{{ era }}</span>
+        }
+      </div>
+    </section>
+
+    <section class="milestones-card">
+      <div class="section-head">
+        <div><span class="eyebrow">Evolution Roadmap</span><h2>100 szintnyi feloldás</h2></div>
+        <p>A tanulási XP nyitja meg a Buddy fejlődési jutalmait. A Premium mérföldkövek látványos 3D extrákat aktiválnak.</p>
+      </div>
+      <div class="milestone-grid">
+        @for (milestone of state.milestones; track milestone.level) {
+          <article class="milestone" [class.unlocked]="milestone.unlocked" [class.current]="milestone.current" [class.premium]="milestone.premium">
+            <div class="milestone-level"><span>LV</span><strong>{{ milestone.level }}</strong></div>
+            <div class="milestone-copy"><strong>{{ milestone.title }}</strong><span>{{ milestone.reward }}</span></div>
+            <div class="milestone-icon">{{ milestone.icon }}</div>
+            @if (milestone.unlocked) { <small><i class="bi bi-check-circle-fill"></i> Feloldva</small> }
+            @else if (milestone.premium && !premium) { <small><i class="bi bi-gem"></i> Premium</small> }
+            @else { <small><i class="bi bi-lock-fill"></i> Zárolva</small> }
+          </article>
+        }
+      </div>
+    </section>
+
+    <section class="skins-card">
+      <div class="section-head">
+        <div><span class="eyebrow">Választható társak</span><h2>Találd meg a saját Buddy-dat</h2></div>
+        <p>Az egér ingyenes. A másik négy 3D Buddy Premium előfizetéssel saját személyiséget, Signature reakciót és Evolution effekteket kap.</p>
+      </div>
+
+      <div class="skins-grid">
+        @for (skin of state.available_skins; track skin.key) {
+          <button
+            type="button"
+            class="skin-card"
+            [class.selected]="state.companion.selected_skin === skin.key"
+            [class.locked]="!skin.unlocked"
+            [class.premium-skin]="skin.premium"
+            [style.--buddy-accent]="skin.accent"
+            [attr.aria-disabled]="!skin.unlocked"
+            (click)="selectSkin(skin)">
+            <span class="skin-image"><img [src]="skin.image" [alt]="skin.name" width="900" height="900" loading="lazy" decoding="async"></span>
+            <span class="skin-copy">
+              <span class="skin-title"><strong>{{ skin.name }}</strong><small>{{ skin.premium ? 'Premium' : 'Ingyenes' }}</small></span>
+              <span>{{ skin.description }}</span>
+              <em>{{ skin.personality }} · {{ skin.signature }}</em>
+            </span>
+            @if (state.companion.selected_skin === skin.key) { <i class="bi bi-check-circle-fill selected-icon"></i> }
+            @else if (!skin.unlocked) { <i class="bi bi-lock-fill lock-icon"></i> }
+          </button>
+        }
+      </div>
+
+      @if (!premium) {
+        <a class="premium-cta" routerLink="/premium"><i class="bi bi-stars"></i> 4 Premium 3D Buddy + extra reakciók és Evolution effektek</a>
+      }
+    </section>
+  }
+</main>

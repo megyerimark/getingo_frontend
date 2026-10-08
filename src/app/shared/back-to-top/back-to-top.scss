@@ -1,0 +1,127 @@
+/* :host{position:fixed;
+    right:max(16px,env(safe-area-inset-right));
+    bottom:max(18px,calc(env(safe-area-inset-bottom) + 12px));z-index:950;pointer-events:none}.back-to-top{position:relative;overflow:hidden;display:flex;align-items:center;gap:7px;min-width:52px;height:48px;padding:0 14px 0 8px;border:1px solid color-mix(in srgb,var(--getingo-border) 84%,transparent);border-radius:999px;background:color-mix(in srgb,var(--getingo-surface) 92%,transparent);color:var(--getingo-text);box-shadow:0 12px 30px rgba(7,26,58,.16);backdrop-filter:blur(14px);font-weight:850;opacity:0;transform:translateY(16px) scale(.9) rotate(3deg);pointer-events:none;transition:opacity .25s ease,transform .32s cubic-bezier(.2,.8,.2,1),background .18s ease}.back-to-top::after{content:'';position:absolute;inset:0;background:linear-gradient(115deg,transparent 20%,rgba(255,255,255,.28),transparent 70%);transform:translateX(-130%)}.back-to-top.visible{opacity:1;transform:none;pointer-events:auto}.back-to-top.visible::after{animation:shine 3.8s ease-in-out infinite}.arrow-wrap{width:32px;height:32px;display:grid;place-items:center;border-radius:50%;background:#1677ff;color:var(--surface-card);box-shadow:0 7px 18px rgba(22,119,255,.26)}.back-to-top:hover{background:var(--getingo-blue);color:var(--surface-card);transform:translateY(-3px)}.back-to-top:hover .arrow-wrap{background:var(--surface-card);color:#1677ff}.back-to-top:hover i{animation:arrowBounce .65s ease infinite alternate}.label{font-size:.78rem}@keyframes arrowBounce{to{transform:translateY(-4px)}}@keyframes shine{0%,65%{transform:translateX(-130%)}85%,100%{transform:translateX(130%)}}@media(max-width:520px){:host{right:12px;bottom:max(12px,calc(env(safe-area-inset-bottom) + 8px))}.back-to-top{width:46px;min-width:46px;height:46px;padding:0;justify-content:center}.label{display:none}.arrow-wrap{width:34px;height:34px}}
+@media(prefers-reduced-motion:reduce){.back-to-top,.back-to-top::after,.back-to-top i{animation:none!important;transition:none!important}}
+ */
+ :host {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(18px, calc(env(safe-area-inset-bottom) + 12px));
+  z-index: 950;
+  pointer-events: none;
+}
+
+.back-to-top {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 52px;
+  height: 48px;
+  padding: 0 14px 0 8px;
+  border: 1px solid color-mix(in srgb, var(--getingo-border) 84%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--getingo-surface) 92%, transparent);
+  color: var(--getingo-text);
+  box-shadow: 0 12px 30px rgba(7, 26, 58, .16);
+  backdrop-filter: blur(14px);
+  font-weight: 850;
+  opacity: 0;
+  transform: translateY(16px) scale(.9) rotate(3deg);
+  pointer-events: none;
+  transition: opacity .25s ease, transform .32s cubic-bezier(.2, .8, .2, 1), background .18s ease;
+}
+
+.back-to-top::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 20%, rgba(255, 255, 255, .28), transparent 70%);
+  transform: translateX(-130%);
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.back-to-top.visible::after {
+  animation: shine 3.8s ease-in-out infinite;
+}
+
+.arrow-wrap {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #1677ff;
+  color: var(--surface-card);
+  box-shadow: 0 7px 18px rgba(22, 119, 255, .26);
+}
+
+.back-to-top:hover {
+  background: var(--getingo-blue);
+  color: var(--surface-card);
+  transform: translateY(-3px);
+}
+
+.back-to-top:hover .arrow-wrap {
+  background: var(--surface-card);
+  color: #1677ff;
+}
+
+.back-to-top:hover i {
+  animation: arrowBounce .65s ease infinite alternate;
+}
+
+.label {
+  font-size: .78rem;
+}
+
+@keyframes arrowBounce {
+  to {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes shine {
+  0%, 65% {
+    transform: translateX(-130%);
+  }
+  85%, 100% {
+    transform: translateX(130%);
+  }
+}
+
+@media(max-width: 520px) {
+  :host {
+    right: 12px;
+    bottom: max(12px, calc(env(safe-area-inset-bottom) + 8px));
+  }
+  .back-to-top {
+    width: 46px;
+    min-width: 46px;
+    height: 46px;
+    padding: 0;
+    justify-content: center;
+  }
+  .label {
+    display: none;
+  }
+  .arrow-wrap {
+    width: 34px;
+    height: 34px;
+  }
+}
+
+@media(prefers-reduced-motion: reduce) {
+  .back-to-top,
+  .back-to-top::after,
+  .back-to-top i {
+    animation: none !important;
+    transition: none !important;
+  }
+}

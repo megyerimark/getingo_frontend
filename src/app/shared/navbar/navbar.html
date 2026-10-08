@@ -1,0 +1,89 @@
+<nav class="site-navbar">
+  <div class="nav-shell">
+    <a class="brand" routerLink="/" (click)="closeMenu()" aria-label="Getingo főoldal">
+      <span class="brand-mark">G</span>
+      <span class="brand-name">Getingo</span>
+    </a>
+
+    <button class="menu-toggle" type="button" aria-label="Menü megnyitása" aria-controls="mainNavbar"
+      [attr.aria-expanded]="isMenuOpen" (click)="toggleMenu()">
+      <i class="bi" [class.bi-list]="!isMenuOpen" [class.bi-x-lg]="isMenuOpen"></i>
+    </button>
+
+    <div id="mainNavbar" class="nav-content" [class.open]="isMenuOpen">
+      <div class="nav-links">
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">Főoldal</a>
+        <a routerLink="/categories" routerLinkActive="active" (click)="closeMenu()">Tananyagok</a>
+
+        @if (auth.currentUser()?.email_verified_at) {
+          <a routerLink="/tasks" routerLinkActive="active" (click)="closeMenu()">
+            <i class="bi bi-check2-square"></i> Feladatok
+          </a>
+
+          <div class="nav-dropdown">
+            <button class="nav-dropdown-trigger" type="button">
+              <i class="bi bi-folder2-open"></i> Projektek <i class="bi bi-chevron-down"></i>
+            </button>
+            <div class="nav-dropdown-menu">
+              <a routerLink="/projects" routerLinkActive="active" (click)="closeMenu()">
+                <i class="bi bi-code-square"></i><span><strong>Projekt Lab</strong><small>Gyakorló projektek</small></span>
+              </a>
+              <a routerLink="/portfolio" routerLinkActive="active" (click)="closeMenu()">
+                <i class="bi bi-briefcase"></i><span><strong>Portfólió</strong><small>Elkészült munkáid</small></span>
+              </a>
+            </div>
+          </div>
+
+          <a routerLink="/buddy" routerLinkActive="active" (click)="closeMenu()"><i class="bi bi-stars"></i> Buddy</a>
+        }
+
+        <a routerLink="/search" routerLinkActive="active" (click)="closeMenu()"><i class="bi bi-search"></i> Keresés</a>
+        <a class="premium-nav-link" routerLink="/premium" routerLinkActive="active" (click)="closeMenu()"><i class="bi bi-stars"></i> Premium</a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="theme-toggle" type="button"
+          [attr.aria-label]="theme.isDark() ? 'Világos téma bekapcsolása' : 'Sötét téma bekapcsolása'"
+          [attr.title]="theme.isDark() ? 'Világos téma' : 'Sötét téma'" (click)="theme.toggle()">
+          <i class="bi" [class.bi-sun-fill]="theme.isDark()" [class.bi-moon-stars-fill]="!theme.isDark()"></i>
+          <span>{{ theme.isDark() ? 'Világos' : 'Sötét' }}</span>
+        </button>
+
+        @if (auth.currentUser(); as user) {
+          <span class="user-chip" [class.premium-user-chip]="user.is_premium">
+            <span class="user-avatar">{{ user.name.charAt(0).toUpperCase() }}</span>
+            <span>{{ user.name }}</span>
+            @if (user.is_premium) { <span class="premium-mini-badge"><i class="bi bi-stars"></i> PRO</span> }
+          </span>
+
+          @if (!user.email_verified_at) {
+            <a class="action-button primary" routerLink="/verify-email" (click)="closeMenu()"><i class="bi bi-envelope-check"></i> Email megerősítése</a>
+          } @else if (user.role === 'admin') {
+            <a class="action-button ghost" routerLink="/admin" (click)="closeMenu()"><i class="bi bi-grid"></i> Admin</a>
+          } @else {
+            <a class="action-button ghost" routerLink="/dashboard" (click)="closeMenu()"><i class="bi bi-person"></i> Fiókom</a>
+          }
+
+          <button class="logout-button" type="button" (click)="logout()" [disabled]="isLoggingOut">
+            <i class="bi" [class.bi-box-arrow-right]="!isLoggingOut" [class.bi-arrow-repeat]="isLoggingOut"></i>
+            {{ isLoggingOut ? 'Kilépés...' : 'Kilépés' }}
+          </button>
+        } @else {
+          <a class="action-button ghost" routerLink="/login" (click)="closeMenu()">Belépés</a>
+          <a class="action-button primary" routerLink="/register" (click)="closeMenu()">Regisztráció</a>
+        }
+      </div>
+    </div>
+  </div>
+</nav>
+
+@if (isLoggingOut) {
+  <div class="logout-transition" aria-live="polite">
+    <div class="logout-transition-card">
+      <div class="getingo-logout-buddy" aria-hidden="true"><span class="buddy-ear left"></span><span class="buddy-ear right"></span><span class="buddy-eye left"></span><span class="buddy-eye right"></span><span class="buddy-mouth"></span><span class="buddy-wave">✦</span></div>
+      <strong>Viszlát!</strong>
+      <small>A Getingo Buddy bezárja a munkameneted.</small>
+      <span class="logout-loader"></span>
+    </div>
+  </div>
+}

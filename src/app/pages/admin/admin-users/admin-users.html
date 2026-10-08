@@ -1,0 +1,27 @@
+<div class="admin-page">
+  <div class="page-header"><div><span class="page-eyebrow">Rendszer</span><h1>Felhasználók</h1><p>Fiókok, jogosultságok, tiltások és biztonságos törlés.</p></div></div>
+  <div class="page-stats"><div class="mini-card"><span>Összes</span><strong>{{ users.length }}</strong></div><div class="mini-card"><span>Diákok</span><strong>{{ students }}</strong></div><div class="mini-card"><span>Adminok</span><strong>{{ admins }}</strong></div><div class="mini-card"><span>Tiltott</span><strong>{{ banned }}</strong></div></div>
+
+  <section class="admin-card">
+    <div class="users-toolbar"><input [(ngModel)]="search" placeholder="Keresés név vagy email alapján..." (keyup.enter)="load()"><button class="admin-button primary" type="button" (click)="load()"><i class="bi bi-search"></i> Keresés</button></div>
+    <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Név</th><th>Email</th><th>Szerepkör</th><th>Állapot</th><th>Művelet</th></tr></thead><tbody>
+      @if (loading) { <tr><td colspan="5">Betöltés...</td></tr> }
+      @else { @for (user of users; track user.id) {
+        <tr><td><strong>{{ user.name }}</strong></td><td>{{ user.email }}</td><td><select [value]="user.role" (change)="changeRole(user, $any($event.target).value)"><option value="student">Student</option><option value="admin">Admin</option></select></td><td>@if (user.is_banned) { <span class="status-badge danger">Tiltott</span> } @else { <span class="status-badge success">Aktív</span> }</td><td><div class="row-actions"><button class="admin-button" [class.danger]="!user.is_banned" [class.secondary]="user.is_banned" (click)="toggleBan(user)">{{ user.is_banned ? 'Visszaengedés' : 'Tiltás' }}</button><button class="admin-button danger-outline" type="button" (click)="openDelete(user)"><i class="bi bi-trash3"></i> Törlés</button></div></td></tr>
+      } }
+    </tbody></table></div>
+  </section>
+</div>
+
+@if (deleteTarget) {
+  <button type="button" class="delete-backdrop" (click)="cancelDelete()" aria-label="Törlési ablak bezárása"></button>
+  <section class="delete-dialog" role="dialog" aria-modal="true" aria-labelledby="delete-user-title" appFocusTrap tabindex="-1">
+    <div class="danger-icon"><i class="bi bi-shield-exclamation"></i></div>
+    <h2 id="delete-user-title">Felhasználó végleges törlése</h2>
+    <p><strong>{{ deleteTarget.name }}</strong> ({{ deleteTarget.email }}) fiókja törlésre kerül. A számlázási bizonylati adatok jogszabályi megőrzés miatt leválasztva megmaradhatnak.</p>
+    <label><span>Törlés oka *</span><textarea [(ngModel)]="deleteReason" rows="3" maxlength="2000" placeholder="Pl. az ügyfél emailben kérte a fiók törlését"></textarea><small>Legalább 5 karakter.</small></label>
+    <label><span>Bizonyíték / ügyfélkérés (opcionális)</span><input type="file" accept=".jpg,.jpeg,.png,.webp,.pdf,.txt,.eml" (change)="onEvidenceSelected($event)"><small>Max. 5 MB. A fájl privát tárhelyre kerül.</small></label>
+    <label><span>Admin jelszavad a megerősítéshez *</span><input type="password" [(ngModel)]="deletePassword" autocomplete="current-password" (keyup.enter)="confirmDelete()"></label>
+    <div class="dialog-actions"><button type="button" class="secondary" (click)="cancelDelete()" [disabled]="deleting">Mégse</button><button type="button" class="danger" (click)="confirmDelete()" [disabled]="!deletePassword || deleteReason.trim().length < 5 || deleting">{{ deleting ? 'Törlés...' : 'Végleges törlés' }}</button></div>
+  </section>
+}

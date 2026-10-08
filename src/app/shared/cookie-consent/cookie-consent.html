@@ -1,0 +1,49 @@
+@if (!consent.hasDecision()) {
+  <aside class="cookie-banner" role="region" aria-label="Süti beállítások">
+    <div class="cookie-copy">
+      <strong>Sütik a Getingo működéséhez</strong>
+      <p>A szükséges sütik a bejelentkezéshez és a biztonsághoz kellenek. Analitikai vagy marketing sütit csak a hozzájárulásod után használunk. <a routerLink="/sutik">Részletek</a></p>
+    </div>
+    <div class="cookie-actions">
+      <button type="button" class="secondary" (click)="consent.rejectOptional()">Csak szükséges</button>
+      <button type="button" class="secondary" (click)="openSettings()">Beállítások</button>
+      <button type="button" class="primary" (click)="consent.acceptAll()">Összes elfogadása</button>
+    </div>
+  </aside>
+}
+
+@if (consent.settingsOpen()) {
+  <div class="cookie-modal-layer">
+    <button type="button" class="cookie-backdrop" aria-label="Süti beállítások bezárása" (click)="consent.closeSettings()"></button>
+    <section class="cookie-dialog" role="dialog" aria-modal="true" aria-labelledby="cookie-settings-title" appFocusTrap tabindex="-1">
+      <div class="dialog-head">
+        <div>
+          <span>SÜTI BEÁLLÍTÁSOK</span>
+          <h2 id="cookie-settings-title">Te döntöd el, mi futhat</h2>
+        </div>
+        <button type="button" class="icon-button" aria-label="Bezárás" (click)="consent.closeSettings()"><i class="bi bi-x-lg"></i></button>
+      </div>
+
+      <div class="preference-row locked">
+        <div><strong>Szükséges sütik</strong><p>Bejelentkezés, CSRF-védelem, munkamenet és a süti-beállításaid megjegyzése.</p></div>
+        <input type="checkbox" checked disabled aria-label="Szükséges sütik mindig aktívak">
+      </div>
+
+      <label class="preference-row">
+        <div><strong>Analitika</strong><p>Csak akkor használható, ha később mérési szolgáltatást kapcsolsz be, és ehhez hozzájárulsz.</p></div>
+        <input type="checkbox" [(ngModel)]="analytics">
+      </label>
+
+      <label class="preference-row">
+        <div><strong>Marketing</strong><p>Csak hozzájárulással használható reklám- vagy remarketing célra. A jelenlegi projektben nincs ilyen integráció.</p></div>
+        <input type="checkbox" [(ngModel)]="marketing">
+      </label>
+
+      <div class="dialog-actions">
+        <button type="button" class="secondary" (click)="consent.rejectOptional()">Minden opcionális elutasítása</button>
+        <button type="button" class="primary" (click)="save()">Beállítások mentése</button>
+      </div>
+      <a routerLink="/sutik" class="details-link" (click)="consent.closeSettings()">Süti tájékoztató megnyitása</a>
+    </section>
+  </div>
+}

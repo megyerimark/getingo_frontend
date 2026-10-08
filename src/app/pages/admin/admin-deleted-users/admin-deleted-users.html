@@ -1,0 +1,37 @@
+<div class="admin-page">
+  <div class="page-header">
+    <div><span class="page-eyebrow">Rendszer</span><h1>Törölt felhasználók</h1><p>Törlési audit, indokok és az ügyfélkérelmekhez csatolt bizonyítékok.</p></div>
+  </div>
+
+  <section class="admin-card">
+    <div class="deleted-toolbar">
+      <input [(ngModel)]="search" placeholder="Keresés név, email vagy indok alapján..." (keyup.enter)="load()">
+      <button class="admin-button primary" type="button" (click)="load()"><i class="bi bi-search"></i> Keresés</button>
+    </div>
+
+    <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Felhasználó</th><th>Szerepkör</th><th>Indok</th><th>Törölte</th><th>Dátum</th><th>Bizonyíték</th></tr></thead><tbody>
+      @if (loading) { <tr><td colspan="6">Betöltés...</td></tr> }
+      @else { @for (record of records; track record.id) {
+        <tr>
+          <td><strong>{{ record.name }}</strong><br><span class="muted">{{ record.email }}</span></td>
+          <td>{{ record.role || '—' }}</td>
+          <td class="reason-cell">{{ record.reason }}</td>
+          <td>{{ record.deleted_by?.name || 'Saját törlés' }}</td>
+          <td>{{ record.deleted_at | date:'yyyy.MM.dd. HH:mm' }}</td>
+          <td>@if (record.evidence_original_name) { <button type="button" class="admin-button secondary" (click)="openEvidence(record)"><i class="bi bi-paperclip"></i> {{ record.evidence_original_name }}</button> } @else { — }</td>
+        </tr>
+      } @empty { <tr><td colspan="6">Nincs találat.</td></tr> } }
+    </tbody></table></div>
+  </section>
+</div>
+
+@if (evidenceTarget) {
+  <button class="secure-backdrop" type="button" aria-label="Bezárás" (click)="closeEvidence()"></button>
+  <section class="secure-dialog" role="dialog" aria-modal="true" aria-labelledby="evidence-title" appFocusTrap tabindex="-1">
+    <div class="secure-icon"><i class="bi bi-shield-lock"></i></div>
+    <h2 id="evidence-title">Bizonyíték megnyitása</h2>
+    <p>Az érzékeny csatolmány letöltéséhez erősítsd meg az admin jelszavadat.</p>
+    <label><span>Admin jelszó</span><input type="password" [(ngModel)]="adminPassword" autocomplete="current-password" (keyup.enter)="downloadEvidence()"></label>
+    <div class="secure-actions"><button type="button" class="secondary" (click)="closeEvidence()" [disabled]="downloading">Mégse</button><button type="button" class="primary" (click)="downloadEvidence()" [disabled]="!adminPassword || downloading">{{ downloading ? 'Letöltés...' : 'Biztonságos letöltés' }}</button></div>
+  </section>
+}

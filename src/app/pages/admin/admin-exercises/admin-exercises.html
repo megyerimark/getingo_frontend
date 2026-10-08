@@ -1,0 +1,42 @@
+<div class="admin-page">
+  <div class="page-header"><div><span class="page-eyebrow">Tartalomkezelés</span><h1>Feladatok</h1><p>Gyakorlófeladatok kezelése és szűrése.</p></div></div>
+  <div class="page-stats"><div class="mini-card"><span>Összes feladat</span><strong>{{ total }}</strong></div></div>
+
+  <section class="admin-card">
+    <h2>{{ editing ? 'Feladat szerkesztése' : 'Új feladat' }}</h2>
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <div class="admin-form-grid">
+        <div class="admin-field"><label>Kategória</label><select formControlName="category_id"><option [ngValue]="null">Válassz</option>@for (category of categories; track category.id) { <option [ngValue]="category.id">{{ category.name }}</option> }</select></div>
+        <div class="admin-field"><label>Nehézség</label><select formControlName="difficulty"><option value="kezdő">Kezdő</option><option value="közepes">Közepes</option><option value="haladó">Haladó</option></select></div><div class="admin-field"><label>Időkeret (perc)</label><input type="number" min="1" max="480" formControlName="estimated_time"></div>
+        <div class="admin-field full"><label>Cím</label><input formControlName="title"></div>
+        <div class="admin-field full"><label>Leírás</label><textarea rows="5" formControlName="description"></textarea></div>
+        <div class="admin-field full"><label>Megoldás</label><textarea class="code-input" formControlName="solution"></textarea></div>
+      </div>
+      <div class="admin-actions"><button class="admin-button primary">Mentés</button>@if (editing) { <button type="button" class="admin-button secondary" (click)="reset()">Mégse</button> }</div>
+    </form>
+  </section>
+
+  <section class="admin-card">
+    <div class="list-heading"><div><h2>Meglévő feladatok</h2><p>{{ total }} találat · {{ page }}/{{ lastPage }} oldal</p></div></div>
+    <form class="filter-toolbar" [formGroup]="filterForm" (ngSubmit)="applyFilters()">
+      <input formControlName="search" placeholder="Keresés címben vagy leírásban...">
+      <select formControlName="category_id"><option [ngValue]="null">Minden kategória</option>@for (category of categories; track category.id) { <option [ngValue]="category.id">{{ category.name }}</option> }</select>
+      <select formControlName="difficulty"><option value="">Minden nehézség</option><option value="kezdő">Kezdő</option><option value="közepes">Közepes</option><option value="haladó">Haladó</option></select>
+      <button class="admin-button primary" type="submit">Szűrés</button><button class="admin-button secondary" type="button" (click)="resetFilters()">Törlés</button>
+    </form>
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead><tr><th>Cím</th><th>Nehézség</th><th>Idő</th><th>Kategória</th><th>Művelet</th></tr></thead>
+        <tbody>
+          @if (loading) { <tr><td colspan="5" class="empty-admin">Betöltés...</td></tr> }
+          @else {
+            @for (exercise of exercises; track exercise.id) {
+              <tr><td><strong>{{ exercise.title }}</strong></td><td>{{ exercise.difficulty }}</td><td>{{ exercise.estimated_time }} perc</td><td>{{ categoryName(exercise.category_id) }}</td><td><div class="admin-actions"><button class="admin-button secondary" (click)="edit(exercise)">Szerkesztés</button><button class="admin-button danger" (click)="remove(exercise.id)">Törlés</button></div></td></tr>
+            } @empty { <tr><td colspan="5" class="empty-admin">Nincs a szűrésnek megfelelő feladat.</td></tr> }
+          }
+        </tbody>
+      </table>
+    </div>
+    <div class="admin-pager"><button class="admin-button secondary" type="button" (click)="previousPage()" [disabled]="page <= 1">← Előző</button><span>{{ page }} / {{ lastPage }}</span><button class="admin-button secondary" type="button" (click)="nextPage()" [disabled]="page >= lastPage">Következő →</button></div>
+  </section>
+</div>

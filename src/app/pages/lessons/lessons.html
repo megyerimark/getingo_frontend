@@ -1,0 +1,419 @@
+@if (loading) {
+  <div class="lesson-loading">
+    <div class="spinner-border"></div>
+    <span>Tananyag betöltése…</span>
+  </div>
+} @else {
+  <div class="lesson-layout" [class.focus-mode]="focusMode">
+    <aside class="lesson-sidebar">
+      @if (curriculum) {
+        <div class="course-summary">
+          <a class="course-back" routerLink="/categories">
+            <i class="bi bi-arrow-left"></i>
+            Tananyagok
+          </a>
+
+          <div class="course-kicker">Tananyag</div>
+          <h2>{{ curriculum.category.name }}</h2>
+
+          <div class="course-progress-row">
+            <span>{{ curriculum.progress.completed }} / {{ curriculum.progress.total }} lecke</span>
+            <strong>{{ curriculum.progress.percentage }}%</strong>
+          </div>
+          <div class="course-progress-track" aria-hidden="true">
+            <div class="course-progress-value" [style.width.%]="curriculum.progress.percentage"></div>
+          </div>
+        </div>
+      }
+
+      <div class="curriculum-nav">
+        @for (section of sections; track section.id) {
+          <div class="curriculum-section" [class.open]="isSectionOpen(section.id)">
+            <button class="section-toggle" type="button" (click)="toggleSection(section.id)">
+              <span class="section-chevron">
+                <i
+                  class="bi"
+                  [class.bi-chevron-down]="isSectionOpen(section.id)"
+                  [class.bi-chevron-right]="!isSectionOpen(section.id)">
+                </i>
+              </span>
+              <span class="section-copy">
+                <strong>{{ section.name }}</strong>
+                <small>{{ sectionCompleted(section) }} / {{ section.lessons.length }} kész</small>
+              </span>
+              @if (section.progress.total > 0 && sectionCompleted(section) === section.progress.total) {
+                <i class="bi bi-check-circle-fill section-done"></i>
+              }
+            </button>
+
+            @if (isSectionOpen(section.id)) {
+              <div class="section-lessons">
+                @for (lesson of section.lessons; track lesson.id) {
+                  <button
+                    class="lesson-link"
+                    type="button"
+                    [class.active]="activeLesson?.id === lesson.id"
+                    [class.completed]="isLessonCompleted(lesson)"
+                    (click)="selectLesson(lesson)">
+                    <span class="lesson-status">
+                      @if (isLessonCompleted(lesson)) {
+                        <i class="bi bi-check-circle-fill"></i>
+                      } @else {
+                        <i class="bi bi-circle"></i>
+                      }
+                    </span>
+                    <span>{{ lesson.title }}</span>
+                  </button>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </aside>
+
+    <main class="lesson-main">
+      @if (errorMessage) {
+        <div class="alert alert-danger">{{ errorMessage }}</div>
+      }
+
+      @if (activeLesson) {
+        <article class="lesson-article">
+          @if (curriculum) {
+            <div class="lesson-breadcrumb">
+              <span>{{ curriculum.category.name }}</span>
+              <i class="bi bi-chevron-right"></i>
+              <span>{{ getActiveSectionName() }}</span>
+            </div>
+          }
+
+          <header class="lesson-header">
+            <div class="lesson-title-row">
+              <div class="lesson-title-copy">
+                <span class="lesson-position">{{ activeLessonNumber() }}. lecke / {{ lessons.length }}</span>
+                <h1>{{ activeLesson.title }}</h1>
+              </div>
+
+              <div class="lesson-header-actions">
+                @if (auth.isLoggedIn()) {
+                  <button
+                    type="button"
+                    class="lesson-icon-action favorite-action"
+                    [class.favorite-active]="activeLesson.is_favorite"
+                    [class.favorite-pop]="favoriteAnimating"
+                    [attr.title]="activeLesson.is_favorite ? 'Eltávolítás a kedvencekből' : 'Hozzáadás a kedvencekhez'"
+                    [attr.aria-label]="activeLesson.is_favorite ? 'Eltávolítás a kedvencekből' : 'Hozzáadás a kedvencekhez'"
+                    [attr.aria-pressed]="activeLesson.is_favorite"
+                    (click)="toggleFavorite()">
+                    <i class="bi" [class.bi-star-fill]="activeLesson.is_favorite" [class.bi-star]="!activeLesson.is_favorite"></i>
+                  </button>
+                }
+
+                @if (auth.currentUser()?.is_premium) {
+                  <button
+                    type="button"
+                    class="focus-mode-toggle"
+                    [class.active]="focusMode"
+                    [attr.aria-pressed]="focusMode"
+                    (click)="toggleFocusMode()">
+                    <i
+                      class="bi"
+                      [class.bi-arrows-fullscreen]="!focusMode"
+                      [class.bi-fullscreen-exit]="focusMode">
+                    </i>
+                    {{ focusMode ? 'Kilépés' : 'Fókusz mód' }}
+                    <span>PRO</span>
+                  </button>
+                }
+              </div>
+            </div>
+          </header>
+
+          <section class="learning-section theory-section">
+            <div class="learning-step-heading">
+              <span class="learning-step-icon"><i class="bi bi-book"></i></span>
+              <div>
+                <span class="learning-step-kicker">Tanuld meg</span>
+                <h2>A lecke lényege</h2>
+              </div>
+            </div>
+
+            <div class="lesson-content-card">
+              @for (block of contentBlocks; track $index) {
+                @if (block.type === 'heading') {
+                  @if (block.level === 2) {
+                    <h2 class="content-heading content-heading-main">{{ block.text }}</h2>
+                  } @else {
+                    <h3 class="content-heading">{{ block.text }}</h3>
+                  }
+                } @else if (block.type === 'paragraph') {
+                  <p class="content-paragraph">{{ block.text }}</p>
+                } @else if (block.type === 'list') {
+                  @if (block.ordered) {
+                    <ol class="content-list">
+                      @for (item of block.items; track $index) {
+                        <li>{{ item }}</li>
+                      }
+                    </ol>
+                  } @else {
+                    <ul class="content-list">
+                      @for (item of block.items; track $index) {
+                        <li>{{ item }}</li>
+                      }
+                    </ul>
+                  }
+                } @else if (block.type === 'code') {
+                  <div class="lesson-code-example">
+                    @if (block.language) {
+                      <div class="lesson-code-language">{{ block.language }}</div>
+                    }
+                    <pre><code>{{ block.code }}</code></pre>
+                  </div>
+                } @else if (block.type === 'tip') {
+                  <div class="lesson-tip">
+                    <i class="bi bi-lightbulb"></i>
+                    <p>{{ block.text }}</p>
+                  </div>
+                }
+              } @empty {
+                <p class="content-paragraph">Ehhez a leckéhez még nincs leírás.</p>
+              }
+            </div>
+          </section>
+
+          @if (hasExampleCode()) {
+            <section class="learning-section workspace-section">
+              <div class="learning-step-heading">
+                <span class="learning-step-icon"><i class="bi bi-code-slash"></i></span>
+                <div>
+                  <span class="learning-step-kicker">Próbáld ki</span>
+                  <h2>Gyakorolj azonnal</h2>
+                  <p>Módosítsd a példát, futtasd, és figyeld meg, mi változik.</p>
+                </div>
+              </div>
+
+              <details class="example-disclosure">
+                <summary>
+                  <span>
+                    <i class="bi bi-file-earmark-code"></i>
+                    Eredeti mintakód megtekintése
+                  </span>
+                  <small>A szerkesztőben bármikor visszaállítható.</small>
+                </summary>
+
+                <div class="example-disclosure-body">
+                  @if (activeLesson.example_html) {
+                    <div class="code-block">
+                      <div class="code-block-header">HTML</div>
+                      <pre class="original-code"><code>{{ activeLesson.example_html }}</code></pre>
+                    </div>
+                  }
+
+                  @if (activeLesson.example_css) {
+                    <div class="code-block">
+                      <div class="code-block-header">CSS</div>
+                      <pre class="original-code"><code>{{ activeLesson.example_css }}</code></pre>
+                    </div>
+                  }
+
+                  @if (isWebLesson() && (activeLesson.example_javascript || activeLesson.example_code)) {
+                    <div class="code-block">
+                      <div class="code-block-header">JavaScript</div>
+                      <pre class="original-code"><code>{{ activeLesson.example_javascript ?? activeLesson.example_code }}</code></pre>
+                    </div>
+                  }
+
+                  @if (!isWebLesson() && activeLesson.example_code) {
+                    <div class="code-block">
+                      <div class="code-block-header">{{ runtimeLabel() }}</div>
+                      <pre class="original-code"><code>{{ activeLesson.example_code }}</code></pre>
+                    </div>
+                  }
+                </div>
+              </details>
+
+              @if (codeLoading) {
+                <div class="workspace-loading">
+                  <div class="spinner-border spinner-border-sm"></div>
+                  <span>Saját kód betöltése…</span>
+                </div>
+              } @else {
+                <div class="w3-editor">
+                  <div class="editor-tabs" role="tablist" aria-label="Kódszerkesztő nyelvek">
+                    @if (isWebLesson()) {
+                      <button class="editor-tab" type="button" [class.active]="activeCodeTab === 'html'" (click)="setCodeTab('html')">HTML</button>
+                      <button class="editor-tab" type="button" [class.active]="activeCodeTab === 'css'" (click)="setCodeTab('css')">CSS</button>
+                      <button class="editor-tab" type="button" [class.active]="activeCodeTab === 'javascript'" (click)="setCodeTab('javascript')">JavaScript</button>
+                    } @else {
+                      <button class="editor-tab active" type="button">{{ runtimeLabel() }}</button>
+                    }
+                    @if (personalCodeSaved) {
+                      <span class="editor-saved"><i class="bi bi-cloud-check"></i> Mentve</span>
+                    }
+                  </div>
+
+                  <div class="editor-body">
+                    @if (isWebLesson() && activeCodeTab === 'html') {
+                      <textarea class="code-editor" spellcheck="false" [formControl]="htmlCode" aria-label="HTML kód" placeholder="Írd ide a HTML kódot…"></textarea>
+                    }
+                    @if (isWebLesson() && activeCodeTab === 'css') {
+                      <textarea class="code-editor" spellcheck="false" [formControl]="cssCode" aria-label="CSS kód" placeholder="Írd ide a CSS kódot…"></textarea>
+                    }
+                    @if (isWebLesson() && activeCodeTab === 'javascript') {
+                      <textarea class="code-editor" spellcheck="false" [formControl]="javascriptCode" aria-label="JavaScript kód" placeholder="Írd ide a JavaScript kódot…"></textarea>
+                    }
+                    @if (!isWebLesson()) {
+                      <textarea class="code-editor language-editor" spellcheck="false" [formControl]="genericCode" [attr.aria-label]="runtimeLabel() + ' kód'" [placeholder]="runtimeLabel() + ' kód írása…'"></textarea>
+                    }
+                  </div>
+
+                  <div class="editor-footer">
+                    @if (auth.isLoggedIn()) {
+                      <button class="btn btn-primary" type="button" (click)="savePersonalCode()">
+                        <i class="bi bi-cloud-arrow-up"></i>
+                        Saját kód mentése
+                      </button>
+                    } @else {
+                      <a class="btn btn-primary" routerLink="/login">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        Belépés a mentéshez
+                      </a>
+                    }
+
+                    <button class="btn btn-outline-secondary" type="button" (click)="resetPersonalCode()">
+                      <i class="bi bi-arrow-counterclockwise"></i>
+                      Eredeti visszaállítása
+                    </button>
+                  </div>
+                </div>
+
+                <app-code-runner
+                  [html]="htmlCode.value"
+                  [css]="cssCode.value"
+                  [javascript]="javascriptCode.value"
+                  [language]="runtimeLanguage()"
+                  [code]="genericCode.value">
+                </app-code-runner>
+              }
+            </section>
+          }
+
+          <section class="learning-section quiz-flow-section">
+            <div class="learning-step-heading">
+              <span class="learning-step-icon"><i class="bi bi-patch-question"></i></span>
+              <div>
+                <span class="learning-step-kicker">Ellenőrizd</span>
+                <h2>Ellenőrizd a tudásod</h2>
+                <p>Néhány rövid kérdésből azonnal kiderül, mi rögzült.</p>
+              </div>
+            </div>
+
+            <app-lesson-quiz [lessonId]="activeLesson.id"></app-lesson-quiz>
+          </section>
+
+          <section class="learning-section finish-section">
+            <div class="learning-step-heading">
+              <span class="learning-step-icon"><i class="bi bi-check2-circle"></i></span>
+              <div>
+                <span class="learning-step-kicker">Fejezd be</span>
+                <h2>Zárd le a leckét</h2>
+              </div>
+            </div>
+
+            @if (auth.isLoggedIn()) {
+              <div class="completion-card" [class.completed]="activeLesson.completed">
+                <div class="completion-copy">
+                  <span class="completion-icon">
+                    <i class="bi" [class.bi-check-circle-fill]="activeLesson.completed" [class.bi-flag]="!activeLesson.completed"></i>
+                  </span>
+                  <div>
+                    <h3>{{ activeLesson.completed ? 'Ezt a leckét már teljesítetted' : 'Kész vagy ezzel a leckével?' }}</h3>
+                    <p>
+                      {{ activeLesson.completed
+                        ? 'A haladásod el van mentve. Folytathatod a következő leckével.'
+                        : 'Jelöld késznek, hogy frissüljön a tanulási haladásod.' }}
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  class="btn btn-success completion-button"
+                  type="button"
+                  [disabled]="activeLesson.completed"
+                  (click)="completeLesson()">
+                  <i class="bi bi-check2"></i>
+                  {{ activeLesson.completed ? 'Lecke teljesítve' : 'Lecke teljesítése' }}
+                </button>
+              </div>
+
+              <details class="note-disclosure">
+                <summary>
+                  <span><i class="bi bi-journal-text"></i> Saját jegyzet</span>
+                  <small>{{ activeNote ? 'Van mentett jegyzeted' : 'Csak te látod' }}</small>
+                </summary>
+
+                <div class="note-box">
+                  <textarea
+                    class="form-control"
+                    rows="6"
+                    [formControl]="note"
+                    placeholder="Írj saját jegyzetet ehhez a leckéhez…">
+                  </textarea>
+
+                  <div class="note-actions">
+                    <button class="btn btn-primary" type="button" (click)="saveNote()">
+                      {{ activeNote ? 'Jegyzet frissítése' : 'Jegyzet mentése' }}
+                    </button>
+
+                    @if (activeNote) {
+                      <button class="btn btn-outline-danger" type="button" (click)="deleteNote()">
+                        Jegyzet törlése
+                      </button>
+                    }
+                  </div>
+                </div>
+              </details>
+            } @else {
+              <div class="login-notice compact-login-notice">
+                <div>
+                  <h3>Mentsd el a haladásodat</h3>
+                  <p>A tananyag, szerkesztő, kódfuttató és kvíz vendégként is használható. Bejelentkezve mentheted a kódodat, a jegyzeteidet és a teljesített leckéket.</p>
+                </div>
+                <div class="login-actions">
+                  <a class="btn btn-success" routerLink="/login">Belépés</a>
+                  <a class="btn btn-outline-success" routerLink="/register">Regisztráció</a>
+                </div>
+              </div>
+            }
+
+            <nav class="lesson-navigation" aria-label="Leckék közötti navigáció">
+              @if (previousLesson(); as previous) {
+                <button class="lesson-nav-button previous" type="button" (click)="selectLesson(previous)">
+                  <i class="bi bi-arrow-left"></i>
+                  <span>
+                    <small>Előző lecke</small>
+                    <strong>{{ previous.title }}</strong>
+                  </span>
+                </button>
+              } @else {
+                <span></span>
+              }
+
+              @if (nextLesson(); as next) {
+                <button class="lesson-nav-button next" type="button" (click)="selectLesson(next)">
+                  <span>
+                    <small>Következő lecke</small>
+                    <strong>{{ next.title }}</strong>
+                  </span>
+                  <i class="bi bi-arrow-right"></i>
+                </button>
+              }
+            </nav>
+          </section>
+        </article>
+      } @else {
+        <div class="alert alert-info">Ebben a kategóriában még nincs tananyag.</div>
+      }
+    </main>
+  </div>
+}

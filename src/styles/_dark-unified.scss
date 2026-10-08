@@ -1,0 +1,91 @@
+/* Unified Getingo dark theme: one global layer for legacy + new components. */
+html[data-theme='dark'] {
+  color-scheme: dark;
+
+  body.dark-theme {
+    background: var(--surface-page);
+    color: var(--text-primary);
+  }
+
+  body.dark-theme :where(
+    .card,
+    [class$='-card'], [class*='-card '],
+    [class$='-panel'], [class*='-panel '],
+    [class$='-dialog'], [class*='-dialog '],
+    [class$='-dropdown'], [class*='-dropdown '],
+    .dropdown-menu, .modal-content, .offcanvas,
+    .list-group-item, .accordion-item
+  ) {
+    background-color: var(--surface-card);
+    border-color: var(--border-default);
+    color: var(--text-primary);
+  }
+
+  body.dark-theme :where(.table) {
+    --bs-table-bg: var(--surface-card);
+    --bs-table-color: var(--text-secondary);
+    --bs-table-border-color: var(--border-default);
+    --bs-table-striped-bg: var(--surface-soft);
+    --bs-table-hover-bg: var(--surface-raised);
+    color: var(--text-secondary);
+  }
+
+  body.dark-theme :where(.dropdown-item,.nav-link,.list-group-item,.accordion-button,.table td,.table th) {
+    color: var(--text-secondary);
+  }
+
+  body.dark-theme :where(.dropdown-item:hover,.dropdown-item:focus,.dropdown-item.active,.accordion-button:not(.collapsed)) {
+    background: var(--surface-raised);
+    color: var(--accent-primary);
+  }
+
+  body.dark-theme :where(.text-dark,.text-body,.text-body-secondary) { color: var(--text-primary) !important; }
+  body.dark-theme :where(.bg-white,.bg-light) { background-color: var(--surface-card) !important; }
+
+  body.dark-theme :where(hr,.divider,[class$='-divider'],[class*='-divider ']) {
+    border-color: var(--border-default);
+    color: var(--border-default);
+  }
+
+  body.dark-theme :where(.badge.text-bg-light,.badge.bg-light) {
+    background: var(--surface-raised) !important;
+    color: var(--text-secondary) !important;
+  }
+
+  body.dark-theme :where(.form-check-input) {
+    background-color: var(--surface-input);
+    border-color: var(--border-strong);
+  }
+  body.dark-theme :where(.form-check-input:checked) {
+    background-color: var(--accent-primary);
+    border-color: var(--accent-primary);
+  }
+
+  body.dark-theme :where(.btn-light,.btn-outline-dark) {
+    border-color: var(--border-default);
+    background: var(--surface-raised);
+    color: var(--text-primary);
+  }
+  body.dark-theme :where(.btn-light:hover,.btn-outline-dark:hover) {
+    border-color: var(--border-strong);
+    background: var(--surface-soft);
+    color: var(--accent-primary);
+  }
+
+  /* Premium changes only accents; it must never turn the dark UI light. */
+  body.dark-theme.premium-theme :where(
+    .site-navbar,.buddy-scene,.learning-command-center,.summary-card,.buddy-card,
+    .learning-path-card,.achievement-card,.project-brief,.lab-card,.preview-card,.portfolio-card
+  ) {
+    background: var(--surface-card) !important;
+    border-color: color-mix(in srgb, var(--accent-primary) 30%, var(--border-default)) !important;
+    color: var(--text-primary) !important;
+  }
+
+  body.dark-theme.premium-theme .buddy-scene {
+    background:
+      radial-gradient(circle at 50% 38%, rgba(167,139,250,.12), transparent 35%),
+      radial-gradient(circle at 60% 68%, rgba(111,169,255,.08), transparent 30%),
+      var(--surface-soft) !important;
+  }
+}

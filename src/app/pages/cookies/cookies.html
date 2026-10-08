@@ -1,0 +1,34 @@
+<section class="cookies-page">
+  <div class="cookies-shell">
+    <a routerLink="/" class="back-link"><i class="bi bi-arrow-left"></i> Vissza a főoldalra</a>
+    <header><span class="eyebrow">GETINGO · ADATVÉDELEM</span><h1>Süti tájékoztató</h1><p>Utolsó frissítés: 2026. október 6.</p></header>
+
+    <article>
+      <h2>1. Mi az a süti?</h2>
+      <p>A süti (cookie) egy kis adatfájl, amelyet a weboldal a böngésződben tárolhat. A Getingo a működéshez feltétlenül szükséges sütiket használja, az opcionális célok pedig csak a választásod alapján kapcsolhatók be.</p>
+
+      <h2>2. Feltétlenül szükséges sütik</h2>
+      <div class="cookie-table">
+        <div><strong>Laravel / Getingo munkamenet</strong><span>A bejelentkezett munkamenet és a biztonságos kiszolgálás fenntartása.</span><small>Jogalap: a szolgáltatás biztosítása · időtartam: a munkamenet és a szerver beállítása szerint.</small></div>
+        <div><strong>XSRF-TOKEN</strong><span>CSRF-támadások elleni technikai védelem.</span><small>Biztonsági süti · a munkamenethez kapcsolódik.</small></div>
+        <div><strong>getingo_cookie_preferences</strong><span>Megjegyzi a süti-beállításaidat, hogy ne kelljen minden látogatáskor újra választanod.</span><small>Preferencia · legfeljebb 1 év.</small></div>
+      </div>
+
+      <h2>3. Helyi böngészőtárolás</h2>
+      <p>A Getingo egyes nem érzékeny felületi beállításokat – például a világos/sötét megjelenési preferenciát – a böngésző helyi tárhelyén (localStorage) is tárolhat. Ez technikailag nem süti, de hasonlóan a böngésződben marad, amíg nem törlöd.</p>
+
+      <h2>4. Analitikai és marketing sütik</h2>
+      <p>A jelenlegi Getingo verzióban nincs aktív külső marketing- vagy viselkedéskövető sütirendszer. Ha később analitikai vagy marketing szolgáltatás kerül bevezetésre, az csak az ehhez szükséges hozzájárulás után töltődhet be, és ez a tájékoztató is frissül.</p>
+
+      <h2>5. Hogyan módosíthatod a választásodat?</h2>
+      <p>A szükséges sütik a szolgáltatás biztonságos működéséhez kellenek, ezért a Getingo felületén nem kapcsolhatók ki. Az opcionális célokkal kapcsolatos választásodat bármikor módosíthatod.</p>
+      <button type="button" class="settings-button" (click)="consent.openSettings()"><i class="bi bi-sliders"></i> Süti beállítások módosítása</button>
+
+      <h2>6. Böngészőbeállítások</h2>
+      <p>A sütiket a böngésződ beállításaiban is törölheted vagy letilthatod. A szükséges sütik letiltása esetén a bejelentkezés, a CSRF-védelem vagy más alapfunkciók nem biztos, hogy megfelelően működnek.</p>
+
+      <h2>7. Kapcsolat</h2>
+      <p>A sütikkel vagy adatvédelemmel kapcsolatos kérdéseket az <a href="mailto:info@getingo.hu">info@getingo.hu</a> címre küldheted. A személyes adatok kezeléséről az <a routerLink="/adatkezelesi-tajekoztato">Adatkezelési tájékoztató</a> tartalmaz részletesebb információt.</p>
+    </article>
+  </div>
+</section>

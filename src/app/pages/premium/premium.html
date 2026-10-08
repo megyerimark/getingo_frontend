@@ -1,0 +1,174 @@
+<section class="premium-page">
+  <div class="premium-shell">
+    <header class="premium-hero">
+      <span class="premium-kicker"><i class="bi bi-stars"></i> GETINGO PREMIUM</span>
+      <h1>A tanulási felületed következő szintje.</h1>
+      <p>A Free csomag továbbra is teljes értékű tanulást ad. A Premium a megjelenést, a személyre szabást és a haladó élményt emeli magasabb szintre.</p>
+
+      @if (auth.currentUser()?.is_premium) {
+        <div class="premium-active-pill"><i class="bi bi-patch-check-fill"></i> Premium aktív</div>
+      }
+    </header>
+
+    @if (errorMessage) {
+      <div class="premium-alert">{{ errorMessage }}</div>
+    }
+
+    @if (!billingConfigured && !loading) {
+      <div class="premium-alert warning">
+        A Stripe még nincs konfigurálva ezen a környezeten. A Premium oldal kész, de fizetés addig nem indítható.
+      </div>
+    }
+
+    <div class="plan-grid">
+      <article class="plan-card free-card">
+        <div class="plan-topline">GETINGO FREE</div>
+        <h2>Ingyenes</h2>
+        <div class="price-row"><strong>0 Ft</strong></div>
+        <p>Tanulj, gyakorolj, készíts projekteket és fejleszd Pixelt.</p>
+        <ul>
+          <li><i class="bi bi-check2"></i> Tananyagok és kvízek</li>
+          <li><i class="bi bi-check2"></i> Project Lab</li>
+          <li><i class="bi bi-check2"></i> XP, streak és achievementek</li>
+          <li><i class="bi bi-check2"></i> Buddy fejlődés</li>
+          <li><i class="bi bi-check2"></i> Projektportfólió</li>
+        </ul>
+        @if (!auth.currentUser()) {
+          <a routerLink="/register" class="plan-button secondary">Ingyenes kezdés</a>
+        } @else {
+          <a routerLink="/dashboard" class="plan-button secondary">Vissza a tanuláshoz</a>
+        }
+      </article>
+
+      <article class="plan-card premium-card">
+        <div class="premium-glow"></div>
+        <div class="recommended">LEGNÉPSZERŰBB</div>
+        <div class="plan-topline"><i class="bi bi-stars"></i> GETINGO PREMIUM</div>
+        <h2>Premium havi</h2>
+        @if (planByKey('monthly'); as plan) {
+          <div class="price-row"><strong>{{ price(plan) }}</strong><span>{{ intervalLabel(plan) }}</span></div>
+        } @else {
+          <div class="price-row"><strong>Stripe ár</strong></div>
+        }
+        <p>A teljes Getingo élmény exkluzív vizuális réteggel és prémium személyre szabással.</p>
+        <ul>
+          <li><i class="bi bi-stars"></i> Mentor Pro – részletesebb kóddiagnózis</li>
+          <li><i class="bi bi-stars"></i> Fókusz mód a leckékhez</li>
+          <li><i class="bi bi-stars"></i> 4 extra 3D Buddy + Signature reakciók</li>
+          <li><i class="bi bi-stars"></i> Aurora Lounge + Cyber Deck 3D szoba</li>
+          <li><i class="bi bi-stars"></i> Premium dashboard, badge és vizuális téma</li>
+        </ul>
+
+        @if (auth.currentUser()?.is_premium) {
+          <button class="plan-button premium" type="button" (click)="manageBilling()" [disabled]="portalLoading">
+            {{ portalLoading ? 'Megnyitás...' : 'Előfizetés kezelése' }}
+          </button>
+        } @else {
+          <button class="plan-button premium" type="button" (click)="startCheckout('monthly')"
+            [disabled]="checkoutLoading !== null || !planByKey('monthly')">
+            {{ checkoutLoading === 'monthly' ? 'Stripe megnyitása...' : 'Premium indítása' }}
+          </button>
+        }
+      </article>
+
+      <article class="plan-card yearly-card">
+        <div class="plan-topline">PREMIUM ÉVES</div>
+        <h2>Premium éves</h2>
+        @if (planByKey('yearly'); as plan) {
+          <div class="price-row"><strong>{{ price(plan) }}</strong><span>{{ intervalLabel(plan) }}</span></div>
+        } @else {
+          <div class="price-row"><strong>Stripe ár</strong></div>
+        }
+        <p>Egy éves előfizetés ugyanazzal a teljes Premium élménnyel.</p>
+        <ul>
+          <li><i class="bi bi-check2"></i> Minden havi Premium előny</li>
+          <li><i class="bi bi-check2"></i> Egyszerű Stripe számlázás</li>
+          <li><i class="bi bi-check2"></i> Előfizetés kezelése Stripe Portalban</li>
+        </ul>
+
+        @if (auth.currentUser()?.is_premium) {
+          <button class="plan-button secondary" type="button" (click)="manageBilling()" [disabled]="portalLoading">
+            Előfizetés kezelése
+          </button>
+        } @else {
+          <button class="plan-button secondary" type="button" (click)="startCheckout('yearly')"
+            [disabled]="checkoutLoading !== null || !planByKey('yearly')">
+            {{ checkoutLoading === 'yearly' ? 'Stripe megnyitása...' : 'Éves Premium' }}
+          </button>
+        }
+      </article>
+    </div>
+
+    <section class="premium-value">
+      <div class="value-heading"><span class="premium-kicker"><i class="bi bi-gem"></i> MIÉRT PREMIUM?</span><h2>Nem gyorsabb XP. Több élmény, több személyre szabás.</h2><p>A Premium nem ad tisztességtelen tanulási előnyt: ugyanazt a tudást kell megszerezned. Cserébe a Getingo világát, a Buddy-dat és a tanulási felületet sokkal személyesebbé és játékosabbá teszi.</p></div>
+      <div class="premium-benefit-grid">
+        <article><i class="bi bi-robot"></i><strong>Mentor Pro</strong><span>Részletesebb kóddiagnózis és többpontos visszajelzés a projektjeidhez.</span></article>
+        <article><i class="bi bi-arrows-fullscreen"></i><strong>Fókusz mód</strong><span>Zavaró elemek nélküli leckeélmény, amikor tényleg koncentrálni szeretnél.</span></article>
+        <article><i class="bi bi-stars"></i><strong>4 exkluzív Buddy</strong><span>Lajhár, Noel Rénszarvas, Cápa és Kis Sárkány külön személyiséggel és Signature reakciókkal.</span></article>
+        <article><i class="bi bi-lightning-charge"></i><strong>Evolution extrák</strong><span>Aurák, részecskék, reakciók és látványos feloldások a Buddy szintjeivel.</span></article>
+        <article><i class="bi bi-house-heart"></i><strong>Premium szobák</strong><span>Aurora Lounge és Cyber Deck a Buddy saját világához.</span></article>
+        <article><i class="bi bi-palette2"></i><strong>Exkluzív megjelenés</strong><span>Premium badge-ek és vizuális elemek a tanulási felületeden.</span></article>
+      </div>
+    </section>
+
+    <section class="comparison-section">
+      <div class="value-heading"><span class="premium-kicker">FREE VS PREMIUM</span><h2>Lásd pontosan, mi jár a két csomagban.</h2></div>
+      <div class="comparison-table" role="table" aria-label="Free és Premium összehasonlítás">
+        <div class="comparison-row comparison-head" role="row"><strong>Funkció</strong><strong>Free</strong><strong>Premium</strong></div>
+        <div class="comparison-row"><span>Tananyagok, kvízek, feladatok</span><i class="bi bi-check-circle-fill yes"></i><i class="bi bi-check-circle-fill yes"></i></div>
+        <div class="comparison-row"><span>Projekt Lab és portfólió</span><i class="bi bi-check-circle-fill yes"></i><i class="bi bi-check-circle-fill yes"></i></div>
+        <div class="comparison-row"><span>XP, streak, achievement</span><i class="bi bi-check-circle-fill yes"></i><i class="bi bi-check-circle-fill yes"></i></div>
+        <div class="comparison-row"><span>Alap Buddy</span><span>Getingo Egér</span><span>Mind az 5 Buddy</span></div>
+        <div class="comparison-row"><span>Buddy Signature reakciók</span><i class="bi bi-dash-circle muted"></i><i class="bi bi-check-circle-fill premium-yes"></i></div>
+        <div class="comparison-row"><span>Premium Evolution effektek</span><i class="bi bi-dash-circle muted"></i><i class="bi bi-check-circle-fill premium-yes"></i></div>
+        <div class="comparison-row"><span>Premium Buddy szobák</span><i class="bi bi-dash-circle muted"></i><i class="bi bi-check-circle-fill premium-yes"></i></div>
+        <div class="comparison-row"><span>Fókusz mód</span><i class="bi bi-dash-circle muted"></i><i class="bi bi-check-circle-fill premium-yes"></i></div>
+        <div class="comparison-row"><span>Mentor Pro</span><span>Alap ellenőrzés</span><span>Részletes diagnózis</span></div>
+      </div>
+    </section>
+
+    <section class="buddy-showcase">
+      <div class="buddy-showcase-copy">
+        <span class="premium-kicker"><i class="bi bi-stars"></i> BUDDY VÁLASZTÁS</span>
+        <h2>Öt külön karakter, saját reakciókkal és Evolution jutalmakkal.</h2>
+        <p>A Getingo Egér minden felhasználónak ingyenes. Premiumban a Lajhár, Noel Rénszarvas, a Cápa és a Kis Sárkány saját személyiséggel, Fókusz móddal, Signature reakcióval, aurákkal és szintenként feloldódó 3D extrákkal válik elérhetővé.</p>
+      </div>
+      <div class="buddy-showcase-grid">
+        <article class="buddy-showcase-card free">
+          <img src="/mascots/getingo-mouse.png" alt="Getingo Egér" width="700" height="700" loading="lazy" decoding="async">
+          <div><span>INGYENES</span><strong>Getingo Egér</strong></div>
+        </article>
+        <article class="buddy-showcase-card premium">
+          <img src="/mascots/getingo-sloth.png" alt="Getingo Lajhár" width="700" height="700" loading="lazy" decoding="async">
+          <div><span>PREMIUM</span><strong>Getingo Lajhár</strong></div>
+        </article>
+        <article class="buddy-showcase-card premium">
+          <img src="/mascots/getingo-reindeer.png" alt="Noel Rénszarvas" width="700" height="700" loading="lazy" decoding="async">
+          <div><span>PREMIUM</span><strong>Noel Rénszarvas</strong></div>
+        </article>
+        <article class="buddy-showcase-card premium">
+          <img src="/mascots/getingo-shark.png" alt="Getingo Cápa" width="700" height="700" loading="lazy" decoding="async">
+          <div><span>PREMIUM</span><strong>Getingo Cápa</strong></div>
+        </article>
+        <article class="buddy-showcase-card premium">
+          <img src="/mascots/getingo-dragon.png" alt="Getingo Kis Sárkány" width="700" height="700" loading="lazy" decoding="async">
+          <div><span>PREMIUM</span><strong>Kis Sárkány</strong></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="premium-preview">
+      <div>
+        <span class="premium-kicker">MITŐL MÁS?</span>
+        <h2>Nem fizetős fal. Prémium élmény.</h2>
+        <p>A tanulás alapjai Free csomagban is megmaradnak. A Premium a Getingo vizuális identitását, a Buddy megjelenését és a tanulási felületet teszi exkluzívabbá. A tananyag, a kvízek és a fejlődés továbbra is Free marad.</p>
+      </div>
+      <div class="preview-dashboard">
+        <div class="preview-top"><span>✦ PREMIUM LEARNER</span><span>12 napos streak</span></div>
+        <div class="preview-title">JavaScript Mastery</div>
+        <div class="preview-progress"><span></span></div>
+        <div class="preview-buddy"><img src="/mascots/getingo-dragon.png" alt="Kis Sárkány Buddy" width="900" height="900" loading="lazy" decoding="async"><span>Premium Buddy</span></div>
+      </div>
+    </section>
+  </div>
+</section>
