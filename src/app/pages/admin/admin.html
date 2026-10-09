@@ -86,7 +86,25 @@
           <i class="bi bi-person-circle"></i>
           <span>Fiókom</span>
         </a>
-
+        <div class="nav-section">
+  <span class="nav-section-title">
+    Támogatás
+  </span>
+  <a
+    routerLink="/admin/bug-reports"
+    routerLinkActive="active"
+    class="bug-report-nav">
+    <i class="bi bi-bug"></i>
+    <span>Hibajelentések</span>
+    @if (unreadBugReports > 0) {
+      <b
+        class="nav-badge"
+        [attr.aria-label]="unreadBugReports + ' új hibajelentés'">
+        {{ unreadBugReports > 99 ? '99+' : unreadBugReports }}
+      </b>
+    }
+  </a>
+</div>
         <a
           routerLink="/admin/users"
           routerLinkActive="active">
@@ -150,11 +168,30 @@
           <span>{{ theme.isDark() ? 'Világos' : 'Sötét' }}</span>
         </button>
 
-        <button
+      <!--   <button
           class="topbar-icon-button"
           type="button">
           <i class="bi bi-bell"></i>
-        </button>
+        </button> -->
+        <button
+  class="topbar-icon-button notification-button"
+  type="button"
+  aria-label="Hibajelentések"
+  title="Hibajelentések"
+  (click)="openBugReports()">
+
+  <i
+    class="bi"
+    [class.bi-bell]="unreadBugReports === 0"
+    [class.bi-bell-fill]="unreadBugReports > 0">
+  </i>
+
+  @if (unreadBugReports > 0) {
+    <span class="notification-badge">
+      {{ unreadBugReports > 99 ? '99+' : unreadBugReports }}
+    </span>
+  }
+</button>
 
         <a
           class="admin-profile"
@@ -179,3 +216,50 @@
     </main>
   </div>
 </div>
+@if (showBugToast) {
+  <div
+    class="bug-notification-toast"
+    role="alert">
+
+    <button
+      type="button"
+      class="toast-main"
+      (click)="openBugReports()">
+
+      <span class="toast-icon">
+        <i class="bi bi-bug-fill"></i>
+      </span>
+
+      <span class="toast-copy">
+        <strong>
+          Új hibajelentés érkezett
+        </strong>
+
+        <small>
+          @if (newBugReports === 1) {
+            Egy új jelentés vár ellenőrzésre.
+          } @else {
+            {{ newBugReports }} új jelentés vár ellenőrzésre.
+          }
+        </small>
+
+        <em>
+          Megnyitás
+          <i class="bi bi-arrow-right"></i>
+        </em>
+      </span>
+    </button>
+
+    <button
+      type="button"
+      class="toast-close"
+      aria-label="Bezárás"
+      (click)="closeBugToast()">
+
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+}
+
+
+

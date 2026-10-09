@@ -14,12 +14,10 @@
       <div class="nav-links">
         <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">Főoldal</a>
         <a routerLink="/categories" routerLinkActive="active" (click)="closeMenu()">Tananyagok</a>
+        <a routerLink="/bug-report" routerLinkActive="active" (click)="closeMenu()">Hibajegy</a>
 
         @if (auth.currentUser()?.email_verified_at) {
-          <a routerLink="/tasks" routerLinkActive="active" (click)="closeMenu()">
-            <i class="bi bi-check2-square"></i> Feladatok
-          </a>
-
+          
           <div class="nav-dropdown">
             <button class="nav-dropdown-trigger" type="button">
               <i class="bi bi-folder2-open"></i> Projektek <i class="bi bi-chevron-down"></i>
@@ -31,6 +29,10 @@
               <a routerLink="/portfolio" routerLinkActive="active" (click)="closeMenu()">
                 <i class="bi bi-briefcase"></i><span><strong>Portfólió</strong><small>Elkészült munkáid</small></span>
               </a>
+              <a routerLink="/tasks" routerLinkActive="active" (click)="closeMenu()">
+            <i class="bi bi-check2-square"></i> Feladatok
+          </a>
+
             </div>
           </div>
 

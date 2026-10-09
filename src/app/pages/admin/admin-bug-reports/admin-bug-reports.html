@@ -1,1 +1,668 @@
-<p>admin-bug-reports works!</p>
+<section class="bug-reports-page">
+
+  <header class="page-header">
+    <div class="page-header-copy">
+      <span class="page-eyebrow">
+        <i class="bi bi-bug-fill"></i>
+        Support inbox
+      </span>
+
+      <h1>Hibajelentések</h1>
+
+      <p>
+        A felhasználók által beküldött hibák, problémák és észrevételek kezelése.
+      </p>
+    </div>
+
+    <div class="page-header-actions">
+      <div class="report-total">
+        <span>Összes jelentés</span>
+        <strong>{{ total }}</strong>
+      </div>
+
+      <button
+        type="button"
+        class="secondary-button"
+        (click)="markAllSeen()">
+
+        <i class="bi bi-check2-all"></i>
+        <span>Mind olvasott</span>
+      </button>
+    </div>
+  </header>
+
+
+  <section class="filters-card">
+    <div class="search-field">
+      <i class="bi bi-search"></i>
+
+      <input
+        type="search"
+        [(ngModel)]="search"
+        placeholder="Keresés cím, leírás vagy felhasználó alapján..."
+        aria-label="Hibajelentések keresése"
+        (keyup.enter)="load(1)">
+    </div>
+
+    <select
+      [(ngModel)]="status"
+      aria-label="Státusz szűrő"
+      (change)="load(1)">
+
+      <option value="">Minden státusz</option>
+      <option value="new">Új</option>
+      <option value="in_progress">Folyamatban</option>
+      <option value="resolved">Megoldva</option>
+      <option value="closed">Lezárva</option>
+    </select>
+
+    <select
+      [(ngModel)]="priority"
+      aria-label="Prioritás szűrő"
+      (change)="load(1)">
+
+      <option value="">Minden prioritás</option>
+      <option value="high">Magas</option>
+      <option value="medium">Közepes</option>
+      <option value="low">Alacsony</option>
+    </select>
+
+    <select
+      [(ngModel)]="type"
+      aria-label="Típus szűrő"
+      (change)="load(1)">
+
+      <option value="">Minden típus</option>
+      <option value="ui">Felületi hiba</option>
+      <option value="function">Funkcionális hiba</option>
+      <option value="performance">Teljesítmény</option>
+      <option value="other">Egyéb</option>
+    </select>
+
+    <label class="unread-toggle">
+      <input
+        type="checkbox"
+        [(ngModel)]="unreadOnly"
+        (change)="load(1)">
+
+      <span class="toggle-box"></span>
+
+      <span>Csak olvasatlan</span>
+    </label>
+
+    <button
+      type="button"
+      class="search-button"
+      title="Keresés"
+      (click)="load(1)">
+
+      <i class="bi bi-search"></i>
+    </button>
+
+    <button
+      type="button"
+      class="reset-button"
+      (click)="resetFilters()">
+
+      <i class="bi bi-arrow-counterclockwise"></i>
+      <span>Alaphelyzet</span>
+    </button>
+  </section>
+
+
+  <section class="inbox-card">
+
+    <div class="inbox-list">
+
+      <div class="inbox-list-header">
+        <div>
+          <strong>Beérkezett jelentések</strong>
+          <span>{{ total }} találat</span>
+        </div>
+
+        @if (loading) {
+          <span class="small-loading">
+            <span class="spinner-border spinner-border-sm"></span>
+          </span>
+        }
+      </div>
+
+
+      <div class="report-list">
+
+        @if (loading && reports.length === 0) {
+          <div class="state-box">
+            <span class="spinner-border"></span>
+            <strong>Hibajelentések betöltése...</strong>
+          </div>
+        }
+
+        @else if (!reports.length) {
+          <div class="state-box empty-state">
+            <div class="state-icon">
+              <i class="bi bi-inbox"></i>
+            </div>
+
+            <strong>Nincs hibajelentés</strong>
+
+            <p>
+              A jelenlegi szűrési feltételeknek egyetlen jelentés sem felel meg.
+            </p>
+
+            <button
+              type="button"
+              class="secondary-button"
+              (click)="resetFilters()">
+
+              Szűrők törlése
+            </button>
+          </div>
+        }
+
+        @else {
+
+          @for (report of reports; track report.id) {
+
+            <button
+              type="button"
+              class="report-row"
+              [class.unread]="!report.seen_at"
+              [class.selected]="selected?.id === report.id"
+              (click)="open(report)">
+
+              <div class="report-unread-column">
+                @if (!report.seen_at) {
+                  <span
+                    class="unread-dot"
+                    title="Olvasatlan">
+                  </span>
+                }
+              </div>
+
+
+              <div class="report-content">
+
+                <div class="report-top-row">
+                  <div class="report-title">
+                    @if (!report.seen_at) {
+                      <span class="new-label">
+                        ÚJ
+                      </span>
+                    }
+
+                    <strong>
+                      {{ report.title }}
+                    </strong>
+                  </div>
+
+                  <time>
+                    {{ report.created_at | date:'yyyy.MM.dd. HH:mm' }}
+                  </time>
+                </div>
+
+
+                <p class="report-description-preview">
+                  {{ report.description }}
+                </p>
+
+
+                <div class="report-bottom-row">
+
+                  <div class="report-tags">
+
+                    <span
+                      class="tag priority-tag"
+                      [class.priority-high]="report.priority === 'high'"
+                      [class.priority-medium]="report.priority === 'medium'"
+                      [class.priority-low]="report.priority === 'low'">
+
+                      @if (report.priority === 'high') {
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                      }
+
+                      {{ priorityLabel(report.priority) }}
+                    </span>
+
+
+                    <span class="tag">
+                      @if (report.type === 'ui') {
+                        <i class="bi bi-window"></i>
+                      }
+
+                      @if (report.type === 'function') {
+                        <i class="bi bi-gear-fill"></i>
+                      }
+
+                      @if (report.type === 'performance') {
+                        <i class="bi bi-speedometer2"></i>
+                      }
+
+                      @if (report.type === 'other') {
+                        <i class="bi bi-three-dots"></i>
+                      }
+
+                      {{ typeLabel(report.type) }}
+                    </span>
+
+
+                    <span
+                      class="tag status-tag"
+                      [class.status-new]="report.status === 'new'"
+                      [class.status-progress]="report.status === 'in_progress'"
+                      [class.status-resolved]="report.status === 'resolved'"
+                      [class.status-closed]="report.status === 'closed'">
+
+                      {{ statusLabel(report.status) }}
+                    </span>
+
+
+                    @if (report.screenshot) {
+                      <span
+                        class="tag attachment-tag"
+                        title="Képernyőkép csatolva">
+
+                        <i class="bi bi-paperclip"></i>
+                        Kép
+                      </span>
+                    }
+                  </div>
+
+
+                  <div class="report-user">
+                    <i class="bi bi-person-circle"></i>
+
+                    <span>
+                      {{ report.user?.name || 'Ismeretlen' }}
+                    </span>
+                  </div>
+
+                </div>
+
+              </div>
+
+              <i class="bi bi-chevron-right row-arrow"></i>
+
+            </button>
+
+          }
+
+        }
+
+      </div>
+
+
+      @if (lastPage > 1) {
+        <footer class="pagination">
+
+          <button
+            type="button"
+            [disabled]="page <= 1 || loading"
+            (click)="load(page - 1)">
+
+            <i class="bi bi-chevron-left"></i>
+          </button>
+
+          <span>
+            {{ page }} / {{ lastPage }}
+          </span>
+
+          <button
+            type="button"
+            [disabled]="page >= lastPage || loading"
+            (click)="load(page + 1)">
+
+            <i class="bi bi-chevron-right"></i>
+          </button>
+
+        </footer>
+      }
+
+    </div>
+
+
+
+    <aside class="report-detail">
+
+      @if (detailLoading) {
+
+        <div class="state-box detail-loading">
+          <span class="spinner-border"></span>
+          <strong>Hibajelentés megnyitása...</strong>
+        </div>
+
+      }
+
+      @else if (!selected) {
+
+        <div class="detail-placeholder">
+          <div class="detail-placeholder-icon">
+            <i class="bi bi-envelope-open"></i>
+          </div>
+
+          <h2>Válassz egy hibajelentést</h2>
+
+          <p>
+            Kattints valamelyik beérkezett jelentésre a teljes tartalom,
+            a képernyőkép és a technikai információk megtekintéséhez.
+          </p>
+        </div>
+
+      }
+
+      @else {
+
+        <div class="detail-content">
+
+          <header class="detail-header">
+
+            <div class="detail-header-copy">
+
+              <div class="detail-id-row">
+                <span class="report-id">
+                  #{{ selected.id }}
+                </span>
+
+                @if (!selected.seen_at) {
+                  <span class="new-label">
+                    ÚJ
+                  </span>
+                }
+              </div>
+
+              <h2>
+                {{ selected.title }}
+              </h2>
+
+            </div>
+
+            <button
+              type="button"
+              class="detail-close"
+              aria-label="Bezárás"
+              title="Bezárás"
+              (click)="closeDetail()">
+
+              <i class="bi bi-x-lg"></i>
+            </button>
+
+          </header>
+
+
+          <div class="detail-meta-row">
+
+            <span
+              class="detail-tag priority-tag"
+              [class.priority-high]="selected.priority === 'high'"
+              [class.priority-medium]="selected.priority === 'medium'"
+              [class.priority-low]="selected.priority === 'low'">
+
+              <i class="bi bi-flag-fill"></i>
+              {{ priorityLabel(selected.priority) }}
+            </span>
+
+            <span class="detail-tag">
+              {{ typeLabel(selected.type) }}
+            </span>
+
+            <span
+              class="detail-tag status-tag"
+              [class.status-new]="selected.status === 'new'"
+              [class.status-progress]="selected.status === 'in_progress'"
+              [class.status-resolved]="selected.status === 'resolved'"
+              [class.status-closed]="selected.status === 'closed'">
+
+              {{ statusLabel(selected.status) }}
+            </span>
+
+          </div>
+
+
+          <section class="sender-card">
+
+            <div class="sender-avatar">
+              {{ selected.user?.name?.charAt(0)?.toUpperCase() || '?' }}
+            </div>
+
+            <div class="sender-info">
+              <span>Beküldte</span>
+
+              <strong>
+                {{ selected.user?.name || 'Ismeretlen felhasználó' }}
+              </strong>
+
+              <small>
+                {{ selected.user?.email || 'Nincs email cím' }}
+              </small>
+            </div>
+
+            <time>
+              <i class="bi bi-clock"></i>
+              {{ selected.created_at | date:'yyyy.MM.dd. HH:mm' }}
+            </time>
+
+          </section>
+
+
+          <section class="detail-section">
+
+            <div class="section-heading">
+              <i class="bi bi-chat-left-text"></i>
+              <span>Hiba leírása</span>
+            </div>
+
+            <div class="description-box">
+              {{ selected.description }}
+            </div>
+
+          </section>
+
+
+          @if (selected.screenshot) {
+
+            <section class="detail-section">
+
+              <div class="section-heading">
+                <i class="bi bi-image"></i>
+                <span>Képernyőkép</span>
+              </div>
+
+              <div class="screenshot-card">
+
+                <a
+                  [href]="screenshotUrl(selected)"
+                  target="_blank"
+                  rel="noopener"
+                  title="Kép megnyitása új lapon">
+
+                  <img
+                    [src]="screenshotUrl(selected)"
+                    alt="A felhasználó által feltöltött hibajelentés képernyőképe">
+                </a>
+
+                <div class="screenshot-footer">
+                  <span>
+                    <i class="bi bi-paperclip"></i>
+                    Csatolt képernyőkép
+                  </span>
+
+                  <a
+                    [href]="screenshotUrl(selected)"
+                    target="_blank"
+                    rel="noopener">
+
+                    Megnyitás
+                    <i class="bi bi-box-arrow-up-right"></i>
+                  </a>
+                </div>
+
+              </div>
+
+            </section>
+
+          }
+
+
+          <section class="detail-section">
+
+            <div class="section-heading">
+              <i class="bi bi-pc-display"></i>
+              <span>Technikai információk</span>
+            </div>
+
+            <div class="technical-grid">
+
+              <div class="technical-item">
+                <span>
+                  <i class="bi bi-link-45deg"></i>
+                  Oldal
+                </span>
+
+                @if (selected.page_url) {
+
+                  <a
+                    [href]="selected.page_url"
+                    target="_blank"
+                    rel="noopener">
+
+                    {{ selected.page_url }}
+
+                    <i class="bi bi-box-arrow-up-right"></i>
+                  </a>
+
+                }
+
+                @else {
+                  <strong>Nem érhető el</strong>
+                }
+              </div>
+
+
+              <div class="technical-item">
+                <span>
+                  <i class="bi bi-laptop"></i>
+                  Platform
+                </span>
+
+                <strong>
+                  {{ selected.platform || 'Ismeretlen' }}
+                </strong>
+              </div>
+
+
+              <div class="technical-item full-width">
+                <span>
+                  <i class="bi bi-browser-chrome"></i>
+                  Böngésző / User Agent
+                </span>
+
+                <strong>
+                  {{ selected.browser || 'Ismeretlen' }}
+                </strong>
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <section class="detail-section status-section">
+
+            <div class="section-heading">
+              <i class="bi bi-kanban"></i>
+              <span>Hibajelentés állapota</span>
+            </div>
+
+            <div class="status-buttons">
+
+              <button
+                type="button"
+                class="status-button status-button-new"
+                [class.active]="selected.status === 'new'"
+                [disabled]="saving"
+                (click)="updateStatus('new')">
+
+                <span class="status-icon">
+                  <i class="bi bi-envelope-fill"></i>
+                </span>
+
+                <span>
+                  <strong>Új</strong>
+                  <small>Még nincs feldolgozva</small>
+                </span>
+              </button>
+
+
+              <button
+                type="button"
+                class="status-button status-button-progress"
+                [class.active]="selected.status === 'in_progress'"
+                [disabled]="saving"
+                (click)="updateStatus('in_progress')">
+
+                <span class="status-icon">
+                  <i class="bi bi-tools"></i>
+                </span>
+
+                <span>
+                  <strong>Folyamatban</strong>
+                  <small>Dolgozunk a hibán</small>
+                </span>
+              </button>
+
+
+              <button
+                type="button"
+                class="status-button status-button-resolved"
+                [class.active]="selected.status === 'resolved'"
+                [disabled]="saving"
+                (click)="updateStatus('resolved')">
+
+                <span class="status-icon">
+                  <i class="bi bi-check-circle-fill"></i>
+                </span>
+
+                <span>
+                  <strong>Megoldva</strong>
+                  <small>A probléma javítva</small>
+                </span>
+              </button>
+
+
+              <button
+                type="button"
+                class="status-button status-button-closed"
+                [class.active]="selected.status === 'closed'"
+                [disabled]="saving"
+                (click)="updateStatus('closed')">
+
+                <span class="status-icon">
+                  <i class="bi bi-archive-fill"></i>
+                </span>
+
+                <span>
+                  <strong>Lezárva</strong>
+                  <small>Nincs további teendő</small>
+                </span>
+              </button>
+
+            </div>
+
+
+            @if (saving) {
+              <div class="saving-status">
+                <span class="spinner-border spinner-border-sm"></span>
+                Státusz mentése...
+              </div>
+            }
+
+          </section>
+
+        </div>
+
+      }
+
+    </aside>
+
+  </section>
+
+</section>

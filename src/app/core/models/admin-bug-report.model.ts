@@ -4,6 +4,17 @@ export type AdminBugReportStatus =
   | 'resolved'
   | 'closed';
 
+export type AdminBugReportType =
+  | 'ui'
+  | 'function'
+  | 'performance'
+  | 'other';
+
+export type AdminBugReportPriority =
+  | 'low'
+  | 'medium'
+  | 'high';
+
 export interface AdminBugReportUser {
   id: number;
   name: string;
@@ -12,27 +23,24 @@ export interface AdminBugReportUser {
 
 export interface AdminBugReport {
   id: number;
+
   user_id: number | null;
+
   title: string;
   description: string;
 
-  type:
-    | 'ui'
-    | 'function'
-    | 'performance'
-    | 'other';
+  type: AdminBugReportType;
 
-  priority:
-    | 'low'
-    | 'medium'
-    | 'high';
+  priority: AdminBugReportPriority;
 
   page_url: string | null;
   browser: string | null;
   platform: string | null;
+
   screenshot: string | null;
 
   status: AdminBugReportStatus;
+
   seen_at: string | null;
 
   created_at: string;
@@ -43,6 +51,7 @@ export interface AdminBugReport {
 
 export interface AdminBugReportListResponse {
   data: AdminBugReport[];
+
   current_page: number;
   last_page: number;
   per_page: number;
