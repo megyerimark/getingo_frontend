@@ -153,6 +153,13 @@ export const routes: Routes = [
         pathMatch: 'full'
       },
       {
+  path: 'bug-reports',
+  loadComponent: () =>
+    import('./pages/admin/admin-bug-reports/admin-bug-reports')
+      .then(m => m.AdminBugReports)
+},
+
+      {
         path: 'dashboard',
         loadComponent: () =>
           import('./pages/admin/admin-dashboard/admin-dashboard')
@@ -220,12 +227,19 @@ export const routes: Routes = [
       }
     ]
   },
-  {
-    path: '**',
-    title: 'Az oldal nem található',
-    data: { seoRobots: 'noindex,nofollow' },
-    loadComponent: () =>
-      import('./pages/not-found/not-found')
-        .then(m => m.NotFound)
-  }
+{
+  path: 'bug-report',
+  canActivate: [authGuard, verifiedGuard],
+  loadComponent: () =>
+    import('./pages/bug-report/bug-report')
+      .then(m => m.BugReport)
+},
+{
+  path: '**',
+  title: 'Az oldal nem található',
+  data: { seoRobots: 'noindex,nofollow' },
+  loadComponent: () =>
+    import('./pages/not-found/not-found')
+      .then(m => m.NotFound)
+}
 ];

@@ -1,0 +1,329 @@
+<main class="bug-report-page">
+  <div class="bug-report-shell">
+
+    <header class="bug-report-header">
+      <div class="header-icon">
+        <i class="bi bi-bug-fill"></i>
+      </div>
+
+      <div>
+        <span class="eyebrow">Getingo Feedback</span>
+        <h1>Hiba jelentése</h1>
+
+        <p>
+          Valami nem úgy működik, ahogy kellene?
+          Küldd el nekünk, és segíts jobbá tenni a Getingót.
+        </p>
+      </div>
+
+      <a
+        routerLink="/dashboard"
+        class="close-button"
+        title="Vissza">
+
+        <i class="bi bi-x-lg"></i>
+      </a>
+    </header>
+
+    <form
+      class="bug-report-form"
+      [formGroup]="form"
+      (ngSubmit)="submit()">
+
+      <section class="form-section">
+        <label for="bug-title">
+          Hiba címe
+          <span>*</span>
+        </label>
+
+        <input
+          id="bug-title"
+          type="text"
+          formControlName="title"
+          maxlength="160"
+          placeholder="Pl. Nem indul el a JavaScript lecke">
+
+    @if (
+  form.controls.title.touched
+  && form.controls.title.hasError('required')
+) {
+  <small class="validation-error">
+    A hiba címe kötelező.
+  </small>
+}
+
+@if (
+  form.controls.title.touched
+  && form.controls.title.hasError('minlength')
+) {
+  <small class="validation-error">
+    A címnek legalább 3 karakteresnek kell lennie.
+  </small>
+}
+      </section>
+
+      <section class="form-section">
+        <div class="label-row">
+          <label for="bug-description">
+            Mi történt?
+            <span>*</span>
+          </label>
+
+          <small>
+            {{ descriptionLength }} / 5000
+          </small>
+        </div>
+
+        <textarea
+          id="bug-description"
+          formControlName="description"
+          maxlength="5000"
+          rows="7"
+          placeholder="Írd le, mit csináltál, mi történt, és mit vártál volna...">
+        </textarea>
+
+     @if (
+  form.controls.description.touched
+  && form.controls.description.hasError('required')
+) {
+  <small class="validation-error">
+    A hiba leírása kötelező.
+  </small>
+}
+
+@if (
+  form.controls.description.touched
+  && form.controls.description.hasError('minlength')
+) {
+  <small class="validation-error">
+    A leírásnak legalább 10 karakteresnek kell lennie.
+    Jelenleg: {{ descriptionLength }} karakter.
+  </small>
+}
+      </section>
+
+      <section class="form-section">
+        <label>Hiba típusa</label>
+
+        <div class="type-options">
+          <button
+            type="button"
+            [class.active]="form.controls.type.value === 'ui'"
+            (click)="setType('ui')">
+
+            <i class="bi bi-palette-fill"></i>
+
+            <span>
+              <strong>Felület</strong>
+              <small>Design vagy megjelenés</small>
+            </span>
+          </button>
+
+          <button
+            type="button"
+            [class.active]="form.controls.type.value === 'function'"
+            (click)="setType('function')">
+
+            <i class="bi bi-gear-fill"></i>
+
+            <span>
+              <strong>Funkció</strong>
+              <small>Valami nem működik</small>
+            </span>
+          </button>
+
+          <button
+            type="button"
+            [class.active]="form.controls.type.value === 'performance'"
+            (click)="setType('performance')">
+
+            <i class="bi bi-speedometer2"></i>
+
+            <span>
+              <strong>Teljesítmény</strong>
+              <small>Lassú vagy akadozik</small>
+            </span>
+          </button>
+
+          <button
+            type="button"
+            [class.active]="form.controls.type.value === 'other'"
+            (click)="setType('other')">
+
+            <i class="bi bi-three-dots"></i>
+
+            <span>
+              <strong>Egyéb</strong>
+              <small>Más jellegű probléma</small>
+            </span>
+          </button>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <label>Prioritás</label>
+
+        <div class="priority-options">
+          <button
+            type="button"
+            class="priority low"
+            [class.active]="form.controls.priority.value === 'low'"
+            (click)="setPriority('low')">
+
+            <span class="priority-dot"></span>
+
+            <span>
+              <strong>Alacsony</strong>
+              <small>Kisebb kellemetlenség</small>
+            </span>
+          </button>
+
+          <button
+            type="button"
+            class="priority medium"
+            [class.active]="form.controls.priority.value === 'medium'"
+            (click)="setPriority('medium')">
+
+            <span class="priority-dot"></span>
+
+            <span>
+              <strong>Közepes</strong>
+              <small>Zavarja a használatot</small>
+            </span>
+          </button>
+
+          <button
+            type="button"
+            class="priority high"
+            [class.active]="form.controls.priority.value === 'high'"
+            (click)="setPriority('high')">
+
+            <span class="priority-dot"></span>
+
+            <span>
+              <strong>Magas</strong>
+              <small>Nem tudom használni</small>
+            </span>
+          </button>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <label>Képernyőkép</label>
+
+        @if (!screenshot) {
+          <label
+            class="upload-zone"
+            for="bug-screenshot"
+            (dragover)="allowDrop($event)"
+            (drop)="onDrop($event)">
+
+            <span class="upload-icon">
+              <i class="bi bi-cloud-arrow-up"></i>
+            </span>
+
+            <strong>
+              Húzd ide a képernyőképet
+            </strong>
+
+            <span>
+              vagy kattints a tallózáshoz
+            </span>
+
+            <small>
+              PNG, JPG vagy WEBP · maximum 5 MB
+            </small>
+          </label>
+
+          <input
+            id="bug-screenshot"
+            class="file-input"
+            type="file"
+            accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp"
+            (change)="onFileSelected($event)">
+        } @else {
+          <div class="uploaded-file">
+
+            @if (screenshotPreview) {
+              <img
+                [src]="screenshotPreview"
+                alt="Képernyőkép előnézet">
+            }
+
+            <div class="uploaded-file-info">
+              <i class="bi bi-check-circle-fill"></i>
+
+              <span>
+                <strong>{{ screenshot.name }}</strong>
+
+                <small>
+                  {{ (screenshot.size / 1024 / 1024).toFixed(2) }} MB
+                </small>
+              </span>
+            </div>
+
+            <button
+              type="button"
+              class="remove-file"
+              (click)="removeScreenshot()"
+              title="Kép eltávolítása">
+
+              <i class="bi bi-trash3"></i>
+            </button>
+          </div>
+        }
+      </section>
+
+      <div class="environment-note">
+        <i class="bi bi-shield-check"></i>
+
+        <div>
+          <strong>A technikai adatokat automatikusan csatoljuk.</strong>
+
+          <span>
+            Az aktuális oldal, böngésző és operációs rendszer
+            segít gyorsabban megtalálni a hibát.
+          </span>
+        </div>
+      </div>
+
+      @if (success) {
+        <div class="form-message success">
+          <i class="bi bi-check-circle-fill"></i>
+          {{ success }}
+        </div>
+      }
+
+      @if (error) {
+        <div class="form-message error">
+          <i class="bi bi-exclamation-triangle-fill"></i>
+          {{ error }}
+        </div>
+      }
+
+      <div class="submit-row">
+        <a
+          routerLink="/dashboard"
+          class="cancel-button">
+
+          Mégse
+        </a>
+<button
+  type="button"
+  class="submit-button"
+  [disabled]="submitting"
+  (click)="submit()">
+
+  @if (submitting) {
+    <span class="spinner-border spinner-border-sm"></span>
+    Küldés...
+  } @else {
+    <i class="bi bi-send-fill"></i>
+    Hibajelentés elküldése
+  }
+</button>
+      </div>
+
+    </form>
+  </div>
+</main>

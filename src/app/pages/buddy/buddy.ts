@@ -3,9 +3,20 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import {
+/*   BuddyRoomKey,
+  CompanionActionEvent,
+  CompanionActionKey,
+  CompanionReaction,
+  CompanionRoom,
+  CompanionSkin,
+  CompanionState,
+  CompanionVisualAction,
+  CompanionBehavior */
   BuddyRoomKey,
   CompanionActionEvent,
   CompanionActionKey,
+  CompanionBehavior,
+  CompanionGrowth,
   CompanionReaction,
   CompanionRoom,
   CompanionSkin,
@@ -62,6 +73,53 @@ export class Buddy implements OnInit {
   get selectedModelUrl(): string {
     return this.selectedSkin?.model_url ?? '/models/getingo-buddies/getingo-mouse.glb';
   }
+  
+  
+/*   get currentBehavior(): CompanionBehavior {
+  return this.state?.behavior ?? {
+    key: 'idle',
+    name: 'Nyugodt',
+    message: 'Minden rendben. A Buddy készen áll.',
+    animation: 'idle'
+  }; */
+  get currentGrowth(): CompanionGrowth {
+  return this.state?.growth ?? {
+    key: 'era-1',
+    level: 1,
+    max_level: 100,
+    era: 1,
+    name: 'Apró társ',
+    progress_percentage: 0,
+    current_level_points: 0,
+    next_level_points: 100,
+    points_to_next_level: 100,
+    next_stage_points: 100,
+    points_to_next_stage: 100,
+    knowledge_growth_points: 0,
+    care_growth_points: 0,
+    total_growth_points: 0,
+    size_percentage: 100,
+    curriculum_points: 0,
+    curriculum_max_points: 0,
+    completed_lessons: 0,
+    total_lessons: 0,
+    completed_quizzes: 0,
+    total_quizzes: 0,
+    curriculum_percentage: 0,
+    evolution_stage: 1,
+    evolution_name: 'Kezdő Buddy'
+  };
+}
+
+get currentBehavior(): CompanionBehavior {
+  return this.state?.behavior ?? {
+    key: 'idle',
+    name: 'Nyugodt',
+    message: 'A Buddy készen áll.',
+    animation: 'idle'
+  };
+}
+
 
   get nextUnlockLabel(): string {
     if (!this.state?.next_unlock) return 'Minden fejlődési mérföldkő teljesítve.';
@@ -176,7 +234,7 @@ export class Buddy implements OnInit {
     return 'bi-code-square';
   }
 
-  behaviorIcon(): string {
+/*   behaviorIcon(): string {
     const behavior = this.state?.behavior.key;
     if (behavior === 'hungry') return 'bi-egg-fried';
     if (behavior === 'thirsty') return 'bi-droplet-fill';
@@ -184,7 +242,18 @@ export class Buddy implements OnInit {
     if (behavior === 'lonely') return 'bi-emoji-frown';
     if (behavior === 'happy') return 'bi-emoji-heart-eyes';
     return 'bi-emoji-smile';
-  }
+  } */
+behaviorIcon(): string {
+  const behavior = this.currentBehavior.key;
+
+  if (behavior === 'hungry') return 'bi-egg-fried';
+  if (behavior === 'thirsty') return 'bi-droplet-fill';
+  if (behavior === 'tired') return 'bi-moon-stars-fill';
+  if (behavior === 'lonely') return 'bi-emoji-frown';
+  if (behavior === 'happy') return 'bi-emoji-heart-eyes';
+
+  return 'bi-emoji-smile';
+}
 
   pet(): void {
     this.care('pet');
@@ -203,10 +272,13 @@ export class Buddy implements OnInit {
     return cost > 0 ? `-${cost} pont` : 'ingyenes';
   }
 
-  tip(): string {
+/*   tip(): string {
     if (!this.state) return '';
     return this.state.behavior.message;
-  }
+  } */
+ tip(): string {
+  return this.currentBehavior.message;
+}
 
   private emitAction(type: CompanionVisualAction): void {
     this.actionEvent = { id: ++this.actionEventId, type };

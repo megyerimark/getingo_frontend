@@ -91,12 +91,34 @@ export class Buddy3D implements AfterViewInit, OnChanges, OnDestroy {
 
   constructor(private zone: NgZone) {}
 
-  ngAfterViewInit(): void {
+ /*  ngAfterViewInit(): void {
     this.initThree();
     this.initialized = true;
     this.applyRoom();
     this.loadBuddyModel();
+  } */
+ ngAfterViewInit(): void {
+  try {
+    console.log('[Buddy3D] Three.js inicializálás indul');
+
+    this.initThree();
+    this.initialized = true;
+    this.applyRoom();
+
+    console.log('[Buddy3D] Three.js inicializálva', {
+      renderer: !!this.renderer,
+      scene: !!this.scene,
+      camera: !!this.camera
+    });
+
+    void this.loadBuddyModel();
+  } catch (error) {
+    console.error('[Buddy3D] Three.js inicializálási hiba:', error);
+
+    this.modelStatus = 'error';
+    this.modelStatusText = 'A 3D motor nem tudott elindulni.';
   }
+}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (!this.initialized) return;
@@ -142,14 +164,29 @@ export class Buddy3D implements AfterViewInit, OnChanges, OnDestroy {
     if (action === 'signature') this.playBestClip(['signature', 'special', 'attack', 'dance', 'jump', 'run', 'happy'], false);
     if (action === 'level_up') this.playBestClip(['level_up', 'levelup', 'evolution', 'celebrate', 'happy'], false);
   }
-
+/* 
   resetView(): void {
     this.manualRotation = 0;
     this.pointerTarget.set(0, 0);
     if (this.camera) {
       this.camera.position.set(0, this.compact ? 1.48 : 1.58, this.compact ? 4.65 : 5.1);
     }
+  } */
+ resetView(): void {
+  this.manualRotation = 0;
+  this.pointerTarget.set(0, 0);
+
+  if (this.camera) {
+    this.camera.position.set(
+      0,
+      this.compact ? 1.48 : 1.58,
+      this.compact ? 4.65 : 5.1
+    );
+
+    this.camera.lookAt(0, 1.05, 0);
+    this.camera.updateProjectionMatrix();
   }
+}
 
   ngOnDestroy(): void {
     cancelAnimationFrame(this.animationFrame);
@@ -219,8 +256,28 @@ export class Buddy3D implements AfterViewInit, OnChanges, OnDestroy {
     this.modelStatusText = 'A 3D Buddy modell betöltése…';
 
     this.clearModel();
-
     try {
+  console.log('[Buddy3D] Modell betöltése:', this.modelUrl);
+
+  const gltf = await loadBuddyGltf(this.modelUrl);
+
+  console.log('[Buddy3D] GLB betöltve:', {
+    scene: gltf.scene,
+    animations: gltf.animations.length
+  });
+
+  this.installModel(gltf.scene, gltf.animations);
+} catch (error) {
+  console.error(
+    '[Buddy3D] A GLB betöltése sikertelen:',
+    this.modelUrl,
+    error
+  );
+
+  this.installProceduralFallback();
+}
+
+  /*   try {
       const gltf = await loadBuddyGltf(this.modelUrl);
       this.installModel(gltf.scene, gltf.animations);
       return;
@@ -228,7 +285,7 @@ export class Buddy3D implements AfterViewInit, OnChanges, OnDestroy {
       // Production-safe fallback: no third-party model is fetched. The generated
       // local Buddy keeps the feature usable until the final GLB is deployed.
       this.installProceduralFallback();
-    }
+    } */
   }
 
   private installModel(scene: THREE.Group, animations: THREE.AnimationClip[]): void {

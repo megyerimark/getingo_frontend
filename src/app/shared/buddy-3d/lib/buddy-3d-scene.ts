@@ -25,6 +25,7 @@ export function createBuddyThreeContext(canvas: HTMLCanvasElement, compact: bool
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(34, 1, .05, 100);
   camera.position.set(0, compact ? 1.48 : 1.58, compact ? 4.65 : 5.1);
+  camera.lookAt(0, 1.05, 0);
 
   const pmrem = new THREE.PMREMGenerator(renderer);
   scene.environment = pmrem.fromScene(new RoomEnvironment(), .04).texture;
